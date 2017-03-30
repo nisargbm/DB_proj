@@ -15,6 +15,7 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.css') }}">
     <!-- Animation Css -->
+    <link href="{{ url_for('static', filename='plugins/node-waves/waves.css') }}" rel="stylesheet" />
     <!-- <link href="plugins/animate-css/animate.css" rel="stylesheet" /> -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/animate-css/animate.css') }}">
 
@@ -32,6 +33,7 @@
 </head>
 
 <body class="theme-red">
+<!-- {% if session.logged_in %} -->
     <!-- Page Loader -->
    <!--  <div class="page-loader-wrapper">
         <div class="loader">
@@ -87,6 +89,7 @@
         </div>
     </nav>
     <!-- #Top Bar -->
+    
     <section>
         <!-- Left Sidebar -->
         <aside id="leftsidebar" class="sidebar">
@@ -96,8 +99,8 @@
                     <img src="{{ url_for('static', filename='images/user.png') }}" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">John Doe</div>
-                    <div class="email">john.doe@example.com</div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session.username}}</div>
+                    <div class="email">{{ session.email }}</div>
                 </div>
             </div>
             <!-- #User Info -->
@@ -139,8 +142,12 @@
         
     </section>
 
+
     {% block body %}
       {% endblock %}
+      <!-- {% else %} -->
+     <!--  <header>this is vjti</header>
+    {% endif %} -->
     <!-- Jquery Core Js -->
     <!-- <script src="plugins/jquery/jquery.min.js"></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script> 

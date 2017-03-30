@@ -6,8 +6,7 @@ from MySQLdb import escape_string as thwart
 from functools import wraps
 import gc
 
-from content_management import Content
-TOPIC_DICT = Content()
+
 
 
 app = Flask(__name__)
@@ -16,12 +15,22 @@ app.secret_key = "sdkjgly"
 
 @app.route('/')
 def homepage():
-	return render_template("history.html")
+    if (session.get('logged_in') == True):
+        if session['logged_in'] == True:
+	        return redirect(url_for("history_page"))
+        else:
+            return redirect(url_for("login_page"))
+    else:
+        return redirect(url_for("login_page"))
 
 
 @app.route('/forgot-password/')
 def forgot_pass_page():
 	return render_template("forgot-password.html")
+
+@app.route('/photos/')
+def photos_page():
+	return render_template("photos.html")
 
 @app.route('/dashboard/')
 def dashboard():
@@ -36,6 +45,13 @@ def upload():
 	# flash("fladfasdfsaassh test!!!!")
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
+
+@app.route('/history/')
+def history_page():
+	flash("flash test!!!!")
+	# flash("fladfasdfsaassh test!!!!")
+	# flash("asdfas asfsafs!!!!")
+	return render_template("history.html")
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -71,8 +87,8 @@ def register_page():
                 return render_template('sign-up.html', form=form, condition="Username already exists")
 
             else:
-                c.execute("INSERT INTO users (username, password, email, tracking) VALUES (%s,%s,%s,%s)", 
-                	[ thwart(username), thwart(password), thwart(email), thwart("/introduction-to-python-programming/")])
+                c.execute("INSERT INTO users (username, password, email,) VALUES (%s,%s,%s,%s)", 
+                	[ thwart(username), thwart(password), thwart(email)])
                 conn.commit()
                 flash("Thanks for registering!")
                 print "Thanks for registering"
@@ -102,12 +118,14 @@ def login_page():
             data = c.execute("SELECT * FROM users WHERE username = (%s)",
                              [thwart(request.form['username'])])
             
-            data = c.fetchone()[2]
+            data = c.fetchone()
+            password = data[2]
+            email = data[3]
 
-
-            if sha256_crypt.verify(request.form['password'], data):
+            if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
                 session['username'] = request.form['username']
+                session['email'] = email
                 print session['username']
                 print ("You are now logged in")
                 return redirect(url_for("upload"))
