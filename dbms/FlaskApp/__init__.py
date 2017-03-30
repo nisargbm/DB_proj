@@ -13,6 +13,17 @@ app = Flask(__name__)
 app.secret_key = "sdkjgly"
 
 
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('login_page'))
+
+    return wrap
+
 @app.route('/')
 def homepage():
     if (session.get('logged_in') == True):
@@ -40,11 +51,13 @@ def dashboard():
 	return render_template("home.html")
 
 @app.route('/upload/')
+@login_required
 def upload():
 	flash("flash test!!!!")
 	# flash("fladfasdfsaassh test!!!!")
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
+
 
 @app.route('/history/')
 def history_page():
@@ -144,17 +157,6 @@ def login_page():
         print error
         return render_template("sign-in.html", error = error)  
 		
-
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash("You need to login first")
-            return redirect(url_for('login_page'))
-
-    return wrap
 
 
 @app.route("/logout/")

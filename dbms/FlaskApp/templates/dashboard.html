@@ -32,7 +32,7 @@
 
 </head>
 
-<body class="theme-red">
+<body class="theme-indigo">
 <!-- {% if session.logged_in %} -->
     <!-- Page Loader -->
    <!--  <div class="page-loader-wrapper">
@@ -71,13 +71,10 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="index.html">ADMINBSB - MATERIAL DESIGN</a>
+                <a class="navbar-brand" href="index.html">Document Tracking</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <!-- Call Search -->
-                    <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
-                    <!-- #END# Call Search -->
                    
                    {% if session.logged_in %}
                     <li class="pull-right"><a href="/logout/" class="js-right-sidebar" data-close="true">Logout</a></li>
@@ -101,6 +98,14 @@
                 <div class="info-container">
                     <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session.username}}</div>
                     <div class="email">{{ session.email }}</div>
+                    <div class="btn-group user-helper-dropdown">
+                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                            <li role="seperator" class="divider"></li>
+                            <li><a href="/logout/"><i class="material-icons">input</i>Sign Out</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <!-- #User Info -->
@@ -156,7 +161,7 @@
 
     <!-- Bootstrap Core Js -->
     <!-- <script src="plugins/bootstrap/js/bootstrap.js"></script> -->
-<script type="text/javascript" crs="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script> 
 
 
     <!-- Select Plugin Js -->
