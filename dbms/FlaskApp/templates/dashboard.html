@@ -77,8 +77,11 @@
                     <li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>
                     <!-- #END# Call Search -->
                    
-                   
-                    <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>
+                   {% if session.logged_in %}
+                    <li class="pull-right"><a href="/logout/" class="js-right-sidebar" data-close="true">Logout</a></li>
+                    {% else %}
+                    <li class="pull-right"><a href="/login/" class="js-right-sidebar" data-close="true">Login</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

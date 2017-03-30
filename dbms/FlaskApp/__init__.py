@@ -108,7 +108,7 @@ def login_page():
             if sha256_crypt.verify(request.form['password'], data):
                 session['logged_in'] = True
                 session['username'] = request.form['username']
-
+                print session['username']
                 print ("You are now logged in")
                 return redirect(url_for("upload"))
 
@@ -143,9 +143,9 @@ def login_required(f):
 @login_required
 def logout():
     session.clear()
-    flash("You have been logged out!")
+    #flash("You have been logged out!")
     gc.collect()
-    return redirect(url_for('dashboard'))
+    return redirect(url_for('upload'))
 
 if __name__ =="__main__":
 	app.debug = True
