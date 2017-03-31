@@ -63,8 +63,10 @@ def upload():
 @app.route('/database/')
 def database():
     c, conn = connection()
-    data = c.execute("SELECT * FROM Outward WHERE user_id = (%s)",[session['userid']])
-    return render_template("database.html")
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    return render_template("database.html", data = data)
 
 @app.route('/history/')
 def history_page():
@@ -121,7 +123,7 @@ def register_page():
                 session['email'] = email
                 return redirect(url_for('upload'))
         print "Nothing happened"
-        return render_template("sign-up.html", form=form , conditon = "Please try again" )
+        return render_template("sign-up.html", form=form , condition = "Register for new " )
     except Exception as e:
         print str(e)
         return(str(e))
