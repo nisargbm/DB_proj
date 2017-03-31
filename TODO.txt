@@ -1,0 +1,34 @@
+Pages: As per Priority in which they need to be implemented
+
+Logged in Home
+    Pending Documents
+
+Upload Document
+    New
+    Existing
+
+History
+    Inward  
+    Outward  
+    Overall  
+
+Document Details
+
+Login
+
+Signup --> Add Department
+
+Normal Home
+
+Forgot Password
+
+Profile
+
+Statistics
+    Overall
+    My Stats -->Pie Chart
+
+About Us
+
+Terms and Conditions
+
