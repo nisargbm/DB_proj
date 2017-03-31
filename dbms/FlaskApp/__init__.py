@@ -27,8 +27,8 @@ def login_required(f):
 @app.route('/')
 def homepage():
     if (session.get('logged_in') == True):
-        if session['logged_in'] == True:
-	        return redirect(url_for("history_page"))
+        if (session['logged_in'] == True):
+            return redirect(url_for("history_page"))
         else:
             return redirect(url_for("login_page"))
     else:
@@ -129,8 +129,9 @@ def register_page():
 
 @app.route('/login/', methods=["GET","POST"])
 def login_page():
-    if session['logged_in'] :
-        return redirect(url_for("home"))
+    if session.get('logged_in'):
+        if session['logged_in']:
+            return redirect(url_for("home"))
     error = ''
     try:
         c, conn = connection()
