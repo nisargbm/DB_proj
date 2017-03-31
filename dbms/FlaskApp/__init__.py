@@ -133,8 +133,8 @@ def login_page():
                              [thwart(request.form['username'])])
             
             data = c.fetchone()
-            password = data[2]
-            email = data[3]
+            password = data[1]
+            email = data[2]
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
