@@ -60,6 +60,11 @@ def upload():
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
+@app.route('/database/')
+def database():
+    c, conn = connection()
+    data = c.execute("SELECT * FROM Outward WHERE user_id = (%s)",[session['userid']])
+    return render_template("database.html")
 
 @app.route('/history/')
 def history_page():
@@ -95,14 +100,14 @@ def register_page():
             c, conn = connection()
 
             x = c.execute("SELECT * FROM User WHERE username = (%s)",[thwart(username)])
-            
+
             if int(x) > 0:
                 print ("That username is already taken, please choose another")
                 print "int(x)>0"
                 return render_template('sign-up.html', form=form, condition="Username already exists")
 
             else:
-                c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)", 
+                data = c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)",
                 	[ thwart(username), thwart(password), thwart(email), thwart('CSIT')])
                 conn.commit()
                 flash("Thanks for registering!")
@@ -110,15 +115,13 @@ def register_page():
                 c.close()
                 conn.close()
                 gc.collect()
-
                 session['logged_in'] = True
+                session['userid'] = data
                 session['username'] = username
                 session['email'] = email
-
                 return redirect(url_for('upload'))
         print "Nothing happened"
         return render_template("sign-up.html", form=form , conditon = "Please try again" )
-
     except Exception as e:
         print str(e)
         return(str(e))
@@ -135,15 +138,17 @@ def login_page():
 
             data = c.execute("SELECT * FROM User WHERE username = (%s)",
                              [thwart(request.form['username'])])
-            
+
             data = c.fetchone()
-            password = data[2]
-            email = data[3]
+            password = data[1]
+            email = data[2]
+            userid = data[0]
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
                 session['username'] = request.form['username']
                 session['email'] = email
+                session['userid'] = userid
                 print session['username']
                 print ("You are now logged in")
                 return redirect(url_for("upload"))
@@ -153,7 +158,7 @@ def login_page():
                 print error
 
         gc.collect()
-        
+
         return render_template("sign-in.html", error=error)
     
         
@@ -161,8 +166,8 @@ def login_page():
         #flash(e)
         error = "Invalid credentials, try again."
         print error
-        return render_template("sign-in.html", error = error)  
-		
+        return render_template("sign-in.html", error = error)
+
 
 
 @app.route("/logout/")
