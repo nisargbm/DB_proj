@@ -8,10 +8,10 @@ ORDER BY Date_of_receipt
 2. Current
 SELECT receiver FROM Document d1
 WHERE d1.doc_id = myid AND d1.Date_of_receipt IN (
-											SELECT MAX(d2.Date_of_receipt)
-											FROM Document d2
-											WHERE d2.doc_id=myid
-										);
+					SELECT MAX(d2.Date_of_receipt)
+					FROM Document d2
+					WHERE d2.doc_id=myid
+				  );
 
 3.1 Docs submitted 
 
@@ -27,10 +27,10 @@ ORDER BY DESC movement_date;
 SELECT doc_id, subject
 FROM Document 
 WHERE receiver = myid AND doc_id IN (
-				  						SELECT doc_id
-				  						FROM Process
-				  						WHERE status= 'PENDING'
-			   					   );
+			    SELECT doc_id
+			    FROM Process
+			    WHERE status= 'PENDING'
+			);
 
 4.Doc Status
 
@@ -69,105 +69,272 @@ ORDER BY DESC movement_date;
 SELECT post_id , type_of_post, estimated_cost 
 FROM Postal_charges
 WHERE outward_id IN (
-					SELECT outward_id
-					FROM Outward
-					WHERE doc_id IN(
-			 						SELECT doc_id
-									FROM Process
-									WHERE doc_id=myid
+		SELECT outward_id
+		FROM Outward
+		WHERE doc_id IN(
+			        SELECT doc_id
+			        FROM Process
+			        WHERE doc_id=myid
 								 )
-				 );
+		     	   );
 
 9. total list of pending docs
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
 WHERE doc_id IN (
-				  SELECT doc_id
-				  FROM Process
-				  WHERE status= 'PENDING'
-			   );
+	         SELECT doc_id
+	         FROM Process
+	         WHERE status= 'PENDING'
+	    );
 
 10. total list of ACCEPTED docs
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
 WHERE doc_id IN (
-				  SELECT doc_id
-				  FROM Process
-				  WHERE status= 'ACCEPTED'
-			   );
+                    SELECT doc_id
+	        FROM Process
+	        WHERE status= 'ACCEPTED'
+	    );
 
 11. total list of REJECTED docs
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
 WHERE doc_id IN (
-				  SELECT doc_id
-				  FROM Process
-				  WHERE status= 'REJECTED'
-			   );
+	        SELECT doc_id
+	        FROM Process
+	        WHERE status= 'REJECTED'
+	    );
 
-12. urgency check INDIVIDUAL
 
-SELECT doc_id, subject
-FROM Document d1
-WHERE sender = hisid AND receiver = myid AND doc_id IN (
-				  											SELECT doc_id
-				  											FROM Process,
-				  											WHERE status= 'PENDING'
-			   										  ); 
-
-13. receive individual query
+12. receive individual query
 
 SELECT doc_id, subject
 FROM Document
-WHERE sender = myid AND receiver = hisid AND doc_id IN (
-				  											SELECT doc_id
-				  											FROM Process
-				  											WHERE status= 'PENDING'
-			   										  );
+WHERE sender = hisid AND receiver = myid AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'PENDING'
+			   	       );
 
-14. receive department query
+13. receive department query
 
 SELECT doc_id, subject
 FROM Document
 WHERE receiver = myid AND doc_id IN (
-			  							SELECT doc_id
-				  						FROM Process
-				  						WHERE status= 'PENDING'
-					 			   )
-					  AND sender IN (
-										SELECT user_id
-										FROM User
-										WHERE department = input
-								   );
+			  SELECT doc_id
+		              FROM Process
+			  WHERE status= 'PENDING'
+			)
+			AND sender IN (
+			  SELECT username
+			  FROM User
+			  WHERE department = input
+			);
 
-15. estimated cost
+14. sent department query
+
+SELECT doc_id, subject
+FROM Document
+WHERE sender = myid AND doc_id IN (
+			  SELECT doc_id
+		              FROM Process
+			  WHERE status= 'PENDING'
+			)
+			AND receiver IN (
+			  SELECT username
+			  FROM User
+			  WHERE department = input
+			);
+
+15. sender individual query
+
+SELECT doc_id, subject
+FROM Document
+WHERE sender = myid AND receiver = hisid AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'PENDING'
+			   	       );
+
+16. estimated cost
 
 SELECT SUM(estimated_cost) AS TOTAL COST
 FROM Postal_charges
 
-16. Indicate GOI GOM DTE BU
+17. Indicate GOI GOM DTE BU
 
 SELECT organisation, COUNT(doc_id) AS Number
 FROM Document
 GROUP BY organisation
 
-17.
+18. Total inward outward
+
 DELIMITER //
 CREATE PROCEDURE totalcount(OUT total int)
  BEGIN
  DECLARE total_inward INT DEFAULT 0
  DECLARE total_outward INT DEFAULT 0
  DECLARE total INT DEFAULT 0
- SELECT COUNT(inward_id) AS totalcount INTO total_inward
+ SELECT COUNT(DISTINCT inward_id) AS totalcount INTO total_inward
 FROM Inward
- SELECT COUNT(outward_id) AS totalcount INTO total_outward
+ SELECT COUNT(DISTINCT outward_id) AS totalcount INTO total_outward
 FROM Outward
  SET total = total_inward + total_outward
 
 END //
 DELIMITER ;
 
+19. Percentage of accepted documents
 
+DELIMITER //
+CREATE PROCEDURE totalcount(OUT total int)
+ BEGIN
+ DECLARE total_accepted INT DEFAULT 0
+ DECLARE total_docs INT DEFAULT 0
+ DECLARE total INT DEFAULT 0
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_accepted
+ FROM Document WHERE receiver = myid AND doc_id IN (
+			    SELECT doc_id
+			    FROM Process
+			    WHERE status= 'ACCEPTED'
+			);
+
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_docs
+ FROM Document
+ SET total = (total_accepted/total_docs)*100
+
+END //
+DELIMITER ;
+
+20.  Percentage of rejected documents
+
+DELIMITER //
+CREATE PROCEDURE totalcount(OUT total int)
+ BEGIN
+ DECLARE total_rejected INT DEFAULT 0
+ DECLARE total_docs INT DEFAULT 0
+ DECLARE total INT DEFAULT 0
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_accepted
+ FROM Document WHERE receiver = myid AND doc_id IN (
+			    SELECT doc_id
+			    FROM Process
+			    WHERE status= 'REJECTED'
+			);
+
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_docs
+ FROM Document
+ SET total = (total_rejected/total_docs)*100
+
+END //
+DELIMITER ;
+
+21. Percentage of pending documents
+
+DELIMITER //
+CREATE PROCEDURE totalcount(OUT total int)
+ BEGIN
+ DECLARE total_accepted INT DEFAULT 0
+ DECLARE total_docs INT DEFAULT 0
+ DECLARE total INT DEFAULT 0
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_accepted
+ FROM Document WHERE receiver = myid AND doc_id IN (
+			    SELECT doc_id
+			    FROM Process
+			    WHERE status= 'PENDING'
+			);
+
+ SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_docs
+ FROM Document
+ SET total = (total_pending/total_docs)*100
+
+END //
+DELIMITER ;
+******************************************************************************************************************************************************
+22.load data
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE User
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Name
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Mobile
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Document
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Inward
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Outward
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Postal_charges
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+LOAD DATA INFILE 'c:/tmp/discounts.csv'
+INTO TABLE Process
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+
+******************************************************************************************************************************************************
+INSERT INTO User(username,password,email_id,department,user_id)  
+VALUES(1,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abc@xyz.com","IT","hemang");
+
+INSERT INTO User(username,password,email_id,department,user_id)  
+VALUES(2,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abcd@xyz.com","IT","om");
+
+INSERT INTO User(username,password,email_id,department,user_id)  
+VALUES(3,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","COMPS","maneesh");
+
+INSERT INTO User(username,password,email_id,department,user_id)  
+VALUES(4,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","COMPS","nisarg");
+
+INSERT INTO User(username,password,email_id,department,user_id)  
+VALUES(5,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","EXTC","keivan");
+
+******************************************************************************************************************************************************
+INSERT INTO Document()  
+VALUES(1,100,,10/12/1990,"hemang"` );
+
+INSERT INTO Document()  
+VALUES(2,100,10/12/1991,"keivan","om");
+
+INSERT INTO Document()  
+VALUES(3,100,10/12/1992,"om","nisarg");
+
+INSERT INTO Document()  
+VALUES(4,100,10/12/2017,"nisarg","maneesh");
+
+******************************************************************************************************************************************************
+
+INSERT INTO Process()
+VALUES(1,100,"ACCEPTED",10/12/1990,"Good");
+
+INSERT INTO Process()
+VALUES(5,100,"ACCEPTED",10/12/1990,"Good");
+
+INSERT INTO Process()
+VALUES(2,100,"ACCEPTED",10/12/1990,"Good");
+
+INSERT INTO Process()
+VALUES(4,100,"ACCEPTED",10/12/1990,"Good");
+
+******************************************************************************************************************************************************
