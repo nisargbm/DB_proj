@@ -94,7 +94,7 @@ class RegistrationForm(Form):
 def register_page():
     try:
         form = RegistrationForm(request.form)
-        print "inside register page"
+        print("inside register page")
         if request.method == "POST" :
             username  = form.username.data
             email = form.email.data
@@ -105,15 +105,13 @@ def register_page():
 
             if int(x) > 0:
                 print ("That username is already taken, please choose another")
-                print "int(x)>0"
-                return render_template('sign-up.html', form=form, condition="Username already exists")
+                return render_template('sign-up.html', form=form, condition="Username already exists.")
 
             else:
                 data = c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)",
                 	[ thwart(username), thwart(password), thwart(email), thwart('CSIT')])
                 conn.commit()
-                flash("Thanks for registering!")
-                print "Thanks for registering"
+                print("Thanks for registering!")
                 c.close()
                 conn.close()
                 gc.collect()
@@ -122,10 +120,10 @@ def register_page():
                 session['username'] = username
                 session['email'] = email
                 return redirect(url_for('upload'))
-        print "Nothing happened"
-        return render_template("sign-up.html", form=form , condition = "Register for new " )
+        print ("Nothing happened")
+        return render_template("sign-up.html", form=form , condition = "Register for New User!" )
     except Exception as e:
-        print str(e)
+        print (str(e))
         return(str(e))
 
 
@@ -152,13 +150,13 @@ def login_page():
                 session['username'] = request.form['username']
                 session['email'] = email
                 session['userid'] = userid
-                print session['username']
+                print (session['username'])
                 print ("You are now logged in")
                 return redirect(url_for("upload"))
 
             else:
                 error = "Invalid credentials, try again."
-                print error
+                print (error)
 
         gc.collect()
 
@@ -168,7 +166,7 @@ def login_page():
     except Exception as e:
         #flash(e)
         error = "Invalid credentials, try again."
-        print error
+        print (error)
         return render_template("sign-in.html", error = error)
 
 
