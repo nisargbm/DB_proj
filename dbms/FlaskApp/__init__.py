@@ -78,7 +78,7 @@ class RegistrationForm(Form):
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated Jan 22, 2015)', [validators.Required()])
+    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice', [validators.Required()])
 
 
 @app.route('/register/', methods=["GET","POST"])
@@ -92,16 +92,16 @@ def register_page():
             password = sha256_crypt.encrypt((str(form.password.data)))
             c, conn = connection()
 
-            x = c.execute("SELECT * FROM users WHERE username = (%s)",[thwart(username)])
+            x = c.execute("SELECT * FROM User WHERE username = (%s)",[thwart(username)])
             
             if int(x) > 0:
-                flash("That username is already taken, please choose another")
+                print ("That username is already taken, please choose another")
                 print "int(x)>0"
                 return render_template('sign-up.html', form=form, condition="Username already exists")
 
             else:
-                c.execute("INSERT INTO users (username, password, email,) VALUES (%s,%s,%s,%s)", 
-                	[ thwart(username), thwart(password), thwart(email)])
+                c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)", 
+                	[ thwart(username), thwart(password), thwart(email), thwart('CSIT')])
                 conn.commit()
                 flash("Thanks for registering!")
                 print "Thanks for registering"
@@ -111,6 +111,7 @@ def register_page():
 
                 session['logged_in'] = True
                 session['username'] = username
+                session['email'] = email
 
                 return redirect(url_for('upload'))
         print "Nothing happened"
@@ -128,7 +129,7 @@ def login_page():
         c, conn = connection()
         if request.method == "POST":
 
-            data = c.execute("SELECT * FROM users WHERE username = (%s)",
+            data = c.execute("SELECT * FROM User WHERE username = (%s)",
                              [thwart(request.form['username'])])
             
             data = c.fetchone()

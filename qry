@@ -1,0 +1,173 @@
+1.Hiearchy
+
+SELECT sender,receiver,Date_of_receipt FROM Document
+GROUP BY doc_id 
+HAVING doc_id = myid
+ORDER BY Date_of_receipt
+
+2. Current
+SELECT receiver FROM Document d1
+WHERE d1.doc_id = myid AND d1.Date_of_receipt=(
+											SELECT MAX(d2.Date_of_receipt)
+											FROM Document d2
+											WHERE d2.doc_id=myid
+										);
+
+3.1 Docs submitted 
+
+SELECT doc_id
+FROM Process
+GROUP BY user_id
+HAVING user_id = myid
+ORDER BY DESC movement_date;
+
+
+3.2 Docs received
+
+SELECT doc_id, subject
+FROM Document 
+WHERE receiver = myid AND doc_id = (
+				  						SELECT doc_id
+				  						FROM Process
+				  						WHERE status= 'PENDING'
+			   					   );
+
+4.Doc Status
+
+SELECT doc_id,status,comment
+FROM Process
+GROUP BY user_id
+HAVING user_id = myid
+ORDER BY DESC movement_date;
+
+5.docs pending
+
+SELECT doc_id
+FROM Process
+GROUP BY user_id
+HAVING user_id = myid AND status = 'PENDING'
+ORDER BY DESC movement_date;
+
+6.docs ACCEPTED
+
+SELECT doc_id
+FROM Process
+GROUP BY user_id
+HAVING user_id = myid AND status = 'ACCEPTED'
+ORDER BY DESC movement_date;
+
+7.docs REJECTED
+
+SELECT doc_id
+FROM Process
+GROUP BY user_id
+HAVING user_id = myid AND status = 'REJECTED'
+ORDER BY DESC movement_date;
+
+8.postal charges
+
+SELECT post_id , type_of_post, estimated_cost 
+FROM Postal_charges
+WHERE outward_id=(
+					SELECT outward_id
+					FROM Outward
+					WHERE doc_id=(
+			 						SELECT doc_id
+									FROM Process
+									WHERE doc_id=myid
+								 )
+				 );
+
+9. total list of pending docs
+
+SELECT COUNT(doc_id) AS Number, doc_id, subject
+FROM Document 
+WHERE doc_id = (
+				  SELECT doc_id
+				  FROM Process
+				  WHERE status= 'PENDING'
+			   );
+
+10. total list of ACCEPTED docs
+
+SELECT COUNT(doc_id) AS Number, doc_id, subject
+FROM Document 
+WHERE doc_id = (
+				  SELECT doc_id
+				  FROM Process
+				  WHERE status= 'ACCEPTED'
+			   );
+
+11. total list of REJECTED docs
+
+SELECT COUNT(doc_id) AS Number, doc_id, subject
+FROM Document 
+WHERE doc_id = (
+				  SELECT doc_id
+				  FROM Process
+				  WHERE status= 'REJECTED'
+			   );
+
+12. urgency check INDIVIDUAL
+
+SELECT doc_id, subject
+FROM Document d1
+WHERE sender = hisid AND receiver = myid AND doc_id = (
+				  											SELECT doc_id
+				  											FROM Process,
+				  											WHERE status= 'PENDING'
+			   										  ); 
+
+13. memo query
+
+SELECT doc_id, subject
+FROM Document
+WHERE sender = myid AND receiver = hisid AND doc_id = (
+				  											SELECT doc_id
+				  											FROM Process
+				  											WHERE status= 'PENDING'
+			   										  );
+
+14. urgency check departmental
+
+SELECT doc_id, subject
+FROM Document
+WHERE receiver = myid AND doc_id = (
+			  							SELECT doc_id
+				  						FROM Process
+				  						WHERE status= 'PENDING'
+					 			   )
+					  AND sender = (
+										SELECT user_id
+										FROM User
+										WHERE department = input
+								   );
+
+15. estimated cost
+
+SELECT SUM(estimated_cost) AS TOTAL COST
+FROM Postal_charges
+
+16. Indicate GOI GOM DTE BU
+
+SELECT organisation, COUNT(doc_id) AS 
+FROM Document
+GROUP BY organisation
+
+17.
+DELIMITER //
+CREATE PROCEDURE totalcount(OUT total int)
+ BEGIN
+ DECLARE total_inward INT DEFAULT 0
+ DECLARE total_outward INT DEFAULT 0
+ DECLARE total INT DEFAULT 0
+ SELECT COUNT(inward_id) AS totalcount INTO total_inward
+FROM Inward
+ SELECT COUNT(outward_id) AS totalcount INTO total_outward
+FROM Outward
+ SET total = total_inward + total_outward
+
+END //
+DELIMITER ;
+
+
