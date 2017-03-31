@@ -7,7 +7,7 @@ ORDER BY Date_of_receipt
 
 2. Current
 SELECT receiver FROM Document d1
-WHERE d1.doc_id = myid AND d1.Date_of_receipt=(
+WHERE d1.doc_id = myid AND d1.Date_of_receipt IN (
 											SELECT MAX(d2.Date_of_receipt)
 											FROM Document d2
 											WHERE d2.doc_id=myid
@@ -26,7 +26,7 @@ ORDER BY DESC movement_date;
 
 SELECT doc_id, subject
 FROM Document 
-WHERE receiver = myid AND doc_id = (
+WHERE receiver = myid AND doc_id IN (
 				  						SELECT doc_id
 				  						FROM Process
 				  						WHERE status= 'PENDING'
@@ -68,10 +68,10 @@ ORDER BY DESC movement_date;
 
 SELECT post_id , type_of_post, estimated_cost 
 FROM Postal_charges
-WHERE outward_id=(
+WHERE outward_id IN (
 					SELECT outward_id
 					FROM Outward
-					WHERE doc_id=(
+					WHERE doc_id IN(
 			 						SELECT doc_id
 									FROM Process
 									WHERE doc_id=myid
@@ -82,7 +82,7 @@ WHERE outward_id=(
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
-WHERE doc_id = (
+WHERE doc_id IN (
 				  SELECT doc_id
 				  FROM Process
 				  WHERE status= 'PENDING'
@@ -92,7 +92,7 @@ WHERE doc_id = (
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
-WHERE doc_id = (
+WHERE doc_id IN (
 				  SELECT doc_id
 				  FROM Process
 				  WHERE status= 'ACCEPTED'
@@ -102,7 +102,7 @@ WHERE doc_id = (
 
 SELECT COUNT(doc_id) AS Number, doc_id, subject
 FROM Document 
-WHERE doc_id = (
+WHERE doc_id IN (
 				  SELECT doc_id
 				  FROM Process
 				  WHERE status= 'REJECTED'
@@ -112,32 +112,32 @@ WHERE doc_id = (
 
 SELECT doc_id, subject
 FROM Document d1
-WHERE sender = hisid AND receiver = myid AND doc_id = (
+WHERE sender = hisid AND receiver = myid AND doc_id IN (
 				  											SELECT doc_id
 				  											FROM Process,
 				  											WHERE status= 'PENDING'
 			   										  ); 
 
-13. memo query
+13. receive individual query
 
 SELECT doc_id, subject
 FROM Document
-WHERE sender = myid AND receiver = hisid AND doc_id = (
+WHERE sender = myid AND receiver = hisid AND doc_id IN (
 				  											SELECT doc_id
 				  											FROM Process
 				  											WHERE status= 'PENDING'
 			   										  );
 
-14. urgency check departmental
+14. receive department query
 
 SELECT doc_id, subject
 FROM Document
-WHERE receiver = myid AND doc_id = (
+WHERE receiver = myid AND doc_id IN (
 			  							SELECT doc_id
 				  						FROM Process
 				  						WHERE status= 'PENDING'
 					 			   )
-					  AND sender = (
+					  AND sender IN (
 										SELECT user_id
 										FROM User
 										WHERE department = input
@@ -150,7 +150,7 @@ FROM Postal_charges
 
 16. Indicate GOI GOM DTE BU
 
-SELECT organisation, COUNT(doc_id) AS 
+SELECT organisation, COUNT(doc_id) AS Number
 FROM Document
 GROUP BY organisation
 

@@ -114,7 +114,7 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li>
-                        <a href="/dashboard/">
+                        <a href="/home/{{ session.username }}">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
@@ -131,10 +131,28 @@
                             <span>upload</span>
                         </a>
                     </li>
-     
+                    <li>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">widgets</i>
+                            <span>Document</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="/new_doc/" >
+                                    <span>New</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/existing_doc" >
+                                    <span>Existing</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <!-- #Menu -->
+
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">

@@ -43,12 +43,14 @@ def forgot_pass_page():
 def photos_page():
 	return render_template("photos.html")
 
-@app.route('/dashboard/')
-def dashboard():
-	flash("flash test!!!!")
-	# flash("fladfasdfsaassh test!!!!")
-	# flash("asdfas asfsafs!!!!")
-	return render_template("home.html")
+@app.route('/home/<variable>')
+@login_required
+def dashboard(variable):
+    if variable == session['username']:
+        return render_template("home.html")
+    else:
+        return redirect(url_for("history_page"))
+        #render_template("404.html")
 
 @app.route('/upload/')
 @login_required
@@ -124,6 +126,8 @@ def register_page():
 
 @app.route('/login/', methods=["GET","POST"])
 def login_page():
+    if session['logged_in'] :
+        return redirect(url_for("home"))
     error = ''
     try:
         c, conn = connection()
@@ -151,7 +155,8 @@ def login_page():
         gc.collect()
         
         return render_template("sign-in.html", error=error)
-
+    
+        
     except Exception as e:
         #flash(e)
         error = "Invalid credentials, try again."
