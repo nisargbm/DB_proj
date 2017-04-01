@@ -24,6 +24,7 @@
 
     <!-- Custom Css -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
 </head>
 
 <body class="signup-page">
@@ -52,6 +53,27 @@
                         <div class="form-line">
                             <input type="email" class="form-control" name="email" placeholder="Email Address" required>
                         </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">business</i>
+                        </span>
+                        <select class="form-control show-tick" type="text" name="department" data-live-search="true">
+                            <option disabled value="">Department</option>
+                            <option value="CSIT" selected="selected">CSIT</option>
+                            <option value="Elex">Electronics</option>
+                            <option value="Elec">Electrical</option>
+                            <option value="Extc">EXTC</option>
+                            <option value="Textile">Textile</option>
+                            <option value="Prod">Production</option>
+                            <option value="Mech">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Chemsa">Chemsa</option>
+                            <option value="Diploma">Diploma</option>
+                            <option value="HR">HR</option>
+                            <option value="TPO">TPO</option>
+                            <option value="Maths">Maths</option>
+                        </select>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">

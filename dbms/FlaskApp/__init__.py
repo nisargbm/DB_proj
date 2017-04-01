@@ -83,6 +83,7 @@ def page_not_found(e):
 class RegistrationForm(Form):
     username = TextField('Username', [validators.Length(min=4, max=20)])
     email = TextField('Email Address', [validators.Length(min=6, max=50)])
+    department = TextField('Department')
     password = PasswordField('New Password', [
         validators.Required(),
         validators.EqualTo('confirm', message='Passwords must match')])
@@ -98,6 +99,7 @@ def register_page():
         if request.method == "POST" :
             username  = form.username.data
             email = form.email.data
+            department = form.department.data
             password = sha256_crypt.encrypt((str(form.password.data)))
             c, conn = connection()
 
@@ -109,7 +111,7 @@ def register_page():
 
             else:
                 data = c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)",
-                	[ thwart(username), thwart(password), thwart(email), thwart('CSIT')])
+                	[ thwart(username), thwart(password), thwart(email), thwart(department)])
                 conn.commit()
                 print("Thanks for registering!")
                 c.close()
