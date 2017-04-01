@@ -69,12 +69,42 @@ def database():
     data = c.fetchall()
     return render_template("database.html", data = data)
 
+@app.route('/history/received')
+def history_recieved():
+	c, conn = connection()
+	###############QUERY FOR Received HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Received History")
+
+@app.route('/history/sent')
+def history_sent():
+	c, conn = connection()
+	###############QUERY FOR Sent HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Sent History")
+
+
 @app.route('/history/')
 def history_page():
-	flash("flash test!!!!")
-	# flash("fladfasdfsaassh test!!!!")
-	# flash("asdfas asfsafs!!!!")
-	return render_template("history.html")
+	c, conn = connection()
+	###############QUERY FOR OVERALL HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Overall History")
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -122,7 +152,7 @@ def register_page():
                 session['userid'] = data
                 session['username'] = username
                 session['email'] = email
-                return redirect(url_for('upload'))
+                return redirect(url_for('home'))
         print ("Nothing happened")
         return render_template("sign-up.html", form=form , condition = "Register for New User!" )
     except Exception as e:
