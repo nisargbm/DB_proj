@@ -1,7 +1,7 @@
 Pages: As per Priority in which they need to be implemented
 
-Logged in Home
-    Pending Documents
+>><< Logged in Home
+    >><< Pending Documents
 
 Upload Document
     New
@@ -13,6 +13,8 @@ History
     Overall  
 
 Document Details
+
+Postal Charges???
 
 >><< Login
 

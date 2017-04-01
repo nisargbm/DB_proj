@@ -80,7 +80,11 @@
                 <ul class="nav navbar-nav navbar-right">
 
                    {% if session.logged_in %}
-                    <li class="pull-right"><a href="/logout/" class="js-right-sidebar" data-close="true">Logout</a></li>
+                    <li class="pull-right">
+                        <a href="/logout/" class="js-right-sidebar" data-close="true">
+                            <i class="material-icons">input</i>
+                        </a>
+                    </li>
                     {% else %}
                     <li class="pull-right"><a href="/login/" class="js-right-sidebar" data-close="true">Login</a></li>
                     {% endif %}
@@ -123,31 +127,53 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/">
-                            <i class="material-icons">text_fields</i>
-                            <span>history</span>
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">history</i>
+                            <span>History</span>
                         </a>
+                        <ul class="ml-menu">
+                            <li>
+                                <a href="" >
+                                    <i class="material-icons">undo</i>
+                                    <span>Recieved</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="" >
+                                    <i class="material-icons">redo</i>
+                                    <span>Sent</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="" >
+                                    <i class="material-icons">select_all</i>
+                                    <span>Overall</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="/upload/">
-                            <i class="material-icons">layers</i>
-                            <span>upload</span>
+                            <i class="material-icons">content_paste</i>
+                            <span>My Documents</span>
                         </a>
                     </li>
 
                     <li>
                         <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">widgets</i>
-                            <span>Document</span>
+                            <i class="material-icons">file_upload</i>
+                            <span>Upload</span>
                         </a>
                         <ul class="ml-menu">
                             <li>
                                 <a href="/new_doc/" >
+                                    <i class="material-icons">open_in_new</i>
                                     <span>New</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="/existing_doc" >
+                                    <i class="material-icons">history</i>
                                     <span>Existing</span>
                                 </a>
                             </li>
@@ -160,7 +186,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2016 <a href="javascript:void(0);">Db_proj</a>.
+                    &copy; 2017 <a href="javascript:void(0);">Document_Tracking</a>.
                 </div>
             </div>
             <!-- #Footer -->
