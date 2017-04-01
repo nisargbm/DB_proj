@@ -2,84 +2,53 @@
 {% block title %}Home{% endblock %}
 {% block body %}
     <section class="content">
-        <div class="container-fluid">
-             <!-- Striped Rows -->
-            <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="card">
-                        <div class="header">
-                            <h2>
-                                STRIPED ROWS
-                                <small>Use <code>.table-striped</code> to add zebra-striping to any table row within the <code>&lt;tbody&gt;</code></small>
-                            </h2>
-                            <ul class="header-dropdown m-r--5">
-                                <li class="dropdown">
-                                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                        <i class="material-icons">more_vert</i>
-                                    </a>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li><a href="javascript:void(0);">Action</a></li>
-                                        <li><a href="javascript:void(0);">Another action</a></li>
-                                        <li><a href="javascript:void(0);">Something else here</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="body table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 5%">#</th>
-                                        <th style="width: 30%">FROM</th>
-                                        <th style="width: 30%">DOCUMENT NAME</th>
-                                        <th style="width: 30%">USERNAME</th>
-                                        <th style="width: 5%">ACTION</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
-                                        <td><form action="/upload/"><button type="submit" class="btn bg-red waves-effect" >Forward</button></form></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>Jacob</td>
-                                        <td>Thornton</td>
-                                        <td>@fat</td>
-                                        <td><button type="button" href="/upload/" class="btn bg-red waves-effect" >Forward</button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>Larry</td>
-                                        <td>the Bird</td>
-                                        <td>@twitter</td>
-                                        <td><button type="button" href="/upload/" class="btn bg-red waves-effect" >Forward</button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>Larry</td>
-                                        <td>Jellybean</td>
-                                        <td>@lajelly</td>
-                                        <td><button type="button" href="/upload/" class="btn bg-red waves-effect" >Forward</button></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">5</th>
-                                        <td>Larry</td>
-                                        <td>Kikat</td>
-                                        <td>@lakitkat</td>
-                                        <td><button type="button" href="/upload/" class="btn bg-red waves-effect" ">Forward</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+        <div class="row clearfix">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>
+                        PENDING FILES
+                        </h2>
                     </div>
-                                
+    {% if data!=null %}
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pass</th>
+                                <th>email</th>
+                                <th>dept</th>
+                                <th>name</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pass</th>
+                                <th>email</th>
+                                <th>dept</th>
+                                <th>name</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in data %}
+                            <tr onclick="window.document.location='/upload/'+{{ user[0] }};">
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1].count("aa") }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td>{{ user[3] }}</td>
+                                <td>{{ user[4] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+    {% else %}
+        <div class="well">NO DATA</div>
+    {% endif %}
+                        </table>
+                    </div>
+                </div>
             </div>
-            <!-- #END# Striped Rows -->
         </div>
     </section>
 {% endblock %}

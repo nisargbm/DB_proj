@@ -43,14 +43,15 @@ def forgot_pass_page():
 def photos_page():
 	return render_template("photos.html")
 
-@app.route('/home/<variable>')
+@app.route('/home')
 @login_required
-def dashboard(variable):
-    if variable == session['username']:
-        return render_template("home.html")
-    else:
-        return redirect(url_for("history_page"))
-        #render_template("404.html")
+def home():
+	c, conn = connection()
+	#QUERY For Pending Documents
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	return render_template("home.html", data=data)
 
 @app.route('/upload/')
 @login_required
@@ -154,7 +155,7 @@ def login_page():
                 session['userid'] = userid
                 print (session['username'])
                 print ("You are now logged in")
-                return redirect(url_for("upload"))
+                return redirect(url_for("home"))
 
             else:
                 error = "Invalid credentials, try again."
