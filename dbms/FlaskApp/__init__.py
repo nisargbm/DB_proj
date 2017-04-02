@@ -26,10 +26,13 @@ def login_required(f):
 
 @app.route('/')
 def homepage():
-	if(session.get('logged_in')):
-		if(session['logged_in']):
-			return redirect(url_for('home'))
-	return render_template("homepage.html")
+    if (session.get('logged_in') == True):
+        if (session['logged_in'] == True):
+            return redirect(url_for("history_page"))
+        else:
+            return redirect(url_for("login_page"))
+    else:
+        return redirect(url_for("login_page"))
 
 
 @app.route('/forgot-password/')
@@ -58,6 +61,20 @@ def upload():
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
+@app.route('/existing_doc/')
+@login_required
+def existing_doc():
+    c, conn = connection()
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    return render_template("existing_doc.html",data= data)
+
+@app.route('/new_doc/')
+@login_required
+def new_doc():
+    return render_template("new_doc.html")
+
 @app.route('/database/')
 def database():
     c, conn = connection()
@@ -66,45 +83,12 @@ def database():
     data = c.fetchall()
     return render_template("database.html", data = data)
 
-@app.route('/history/received')
-def history_recieved():
-	c, conn = connection()
-	###############QUERY FOR Received HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Received History")
-
-@app.route('/history/sent')
-def history_sent():
-	c, conn = connection()
-	###############QUERY FOR Sent HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Sent History")
-
-@app.route('/forgot-password')
-def forgot_password():
-	return render_template("forgot-password.html")
-
 @app.route('/history/')
 def history_page():
-	c, conn = connection()
-	###############QUERY FOR OVERALL HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Overall History")
+	flash("flash test!!!!")
+	# flash("fladfasdfsaassh test!!!!")
+	# flash("asdfas asfsafs!!!!")
+	return render_template("history.html")
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -152,7 +136,7 @@ def register_page():
                 session['userid'] = data
                 session['username'] = username
                 session['email'] = email
-                return redirect(url_for('home'))
+                return redirect(url_for('upload'))
         print ("Nothing happened")
         return render_template("sign-up.html", form=form , condition = "Register for New User!" )
     except Exception as e:
