@@ -26,13 +26,10 @@ def login_required(f):
 
 @app.route('/')
 def homepage():
-    if (session.get('logged_in') == True):
-        if (session['logged_in'] == True):
-            return redirect(url_for("history_page"))
-        else:
-            return redirect(url_for("login_page"))
-    else:
-        return redirect(url_for("login_page"))
+	if(session.get('logged_in')):
+		if(session['logged_in']):
+			return redirect(url_for('home'))
+	return render_template("homepage.html")
 
 
 @app.route('/forgot-password/')
@@ -93,6 +90,9 @@ def history_sent():
 	gc.collect()
 	return render_template("history.html", data = data, text = "Sent History")
 
+@app.route('/forgot-password')
+def forgot_password():
+	return render_template("forgot-password.html")
 
 @app.route('/history/')
 def history_page():
