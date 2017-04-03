@@ -53,6 +53,12 @@ def home():
 	data = c.fetchall()
 	return render_template("home.html", data=data)
 
+@app.route('/outward/')	
+@login_required
+def outward():
+	#c,conn =connection()
+	return render_template("outward_form.html")
+
 @app.route('/upload/')
 @login_required
 def upload():
