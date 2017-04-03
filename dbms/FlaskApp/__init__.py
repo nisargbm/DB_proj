@@ -61,14 +61,14 @@ def upload():
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
-@app.route('/existing_doc/')
+@app.route('/existing_doc/<int:variable>')
 @login_required
-def existing_doc():
+def existing_doc(variable):
     c, conn = connection()
-    c.execute("SELECT * FROM User")
-    conn.commit()
+    c.execute("SELECT * FROM User  WHERE user_id = "+format(variable)+"")
+    #conn.commit()
     data = c.fetchall()
-    return render_template("existing_doc.html",data= data)
+    return render_template("existing_doc.html", data = data)
 
 @app.route('/new_doc/')
 @login_required
