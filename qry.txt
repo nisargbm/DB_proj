@@ -31,13 +31,13 @@ WHERE doc_id IN(
 SELECT doc_id,subject,details
 FROM Document_details 
 WHERE doc_id IN (
-					SELECT doc_id
-					FROM Document,  
-					WHERE receiver = myid AND doc_id IN (
-			    											SELECT doc_id
-			    											FROM Process
-			    											WHERE status= 'PENDING'
-														)
+		   SELECT doc_id
+		   FROM Document,  
+		   WHERE receiver = myid AND doc_id IN (
+			    				    SELECT doc_id
+			    				    FROM Process
+			    				    WHERE status= 'PENDING'
+						       )
 				);
 
 
@@ -47,9 +47,8 @@ SELECT doc_id,subject,details,status,comment
 FROM Process p
 JOIN Document_details d
 ON p.doc_id = d.doc_id
-GROUP BY user_id
-HAVING user_id = myid
-ORDER BY DESC movement_date;
+WHERE user_id = myid
+ORDER BY movement_date DESC ;
 
 5.docs pending
 
@@ -57,24 +56,25 @@ SELECT doc_id,subject,details
 FROM Process p
 JOIN Document_details d
 ON p.doc_id = d.doc_id
-GROUP BY user_id
-HAVING user_id = myid AND status = 'PENDING'
-ORDER BY DESC movement_date;
+WHERE user_id = myid AND status = 'PENDING'
+ORDER BY movement_date DESC ;
 
 6.docs ACCEPTED
 
-SELECT doc_id
-FROM Process
-GROUP BY user_id
-HAVING user_id = myid AND status = 'ACCEPTED'
+SELECT doc_id,subject,details
+FROM Process p
+JOIN Document_details d
+ON p.doc_id = d.doc_id
+WHERE user_id = myid AND status = 'ACCEPTED'
 ORDER BY DESC movement_date;
 
 7.docs REJECTED
 
-SELECT doc_id
-FROM Process
-GROUP BY user_id
-HAVING user_id = myid AND status = 'REJECTED'
+SELECT doc_id,subject,details
+FROM Process p
+JOIN Document_details d
+ON p.doc_id = d.doc_id
+WHERE user_id = myid AND status = 'REJECTED'
 ORDER BY DESC movement_date;
 
 8.postal charges
@@ -82,50 +82,58 @@ ORDER BY DESC movement_date;
 SELECT post_id , type_of_post, estimated_cost 
 FROM Postal_charges
 WHERE outward_id IN (
-		SELECT outward_id
-		FROM Outward
-		WHERE doc_id IN(
-			        SELECT doc_id
-			        FROM Process
-			        WHERE doc_id=myid
-								 )
-		     	   );
+			SELECT outward_id
+			FROM Outward
+			WHERE doc_id IN(
+			        	   SELECT doc_id
+			        	   FROM Process
+			        	   WHERE doc_id=myid
+			       	       )
+		    );
 
 9. total list of pending docs
 
-SELECT COUNT(doc_id) AS Number, doc_id, subject
-FROM Document 
+SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id
 WHERE doc_id IN (
-	         SELECT doc_id
-	         FROM Process
-	         WHERE status= 'PENDING'
-	    );
+	             SELECT doc_id
+	             FROM Process
+	             WHERE status= 'PENDING'
+	        );
 
 10. total list of ACCEPTED docs
 
-SELECT COUNT(doc_id) AS Number, doc_id, subject
-FROM Document 
+SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id 
 WHERE doc_id IN (
                     SELECT doc_id
-	        FROM Process
-	        WHERE status= 'ACCEPTED'
-	    );
+	            FROM Process
+	            WHERE status= 'ACCEPTED'
+	        );
 
 11. total list of REJECTED docs
 
-SELECT COUNT(doc_id) AS Number, doc_id, subject
-FROM Document 
+SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject,details
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id 
 WHERE doc_id IN (
-	        SELECT doc_id
-	        FROM Process
-	        WHERE status= 'REJECTED'
-	    );
+	            SELECT doc_id
+	            FROM Process
+	            WHERE status= 'REJECTED'
+	        );
 
 
 12. receive individual query
 
-SELECT doc_id, subject
-FROM Document
+SELECT doc_id, subject,details
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id
 WHERE sender = hisid AND receiver = myid AND doc_id IN (
 				  	SELECT doc_id
 				  	FROM Process
@@ -134,8 +142,10 @@ WHERE sender = hisid AND receiver = myid AND doc_id IN (
 
 13. receive department query
 
-SELECT doc_id, subject
-FROM Document
+SELECT doc_id, subject,details
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id
 WHERE receiver = myid AND doc_id IN (
 			  SELECT doc_id
 		              FROM Process
@@ -149,11 +159,13 @@ WHERE receiver = myid AND doc_id IN (
 
 14. sent department query
 
-SELECT doc_id, subject
-FROM Document
+SELECT doc_id, subject, details
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id
 WHERE sender = myid AND doc_id IN (
 			  SELECT doc_id
-		              FROM Process
+		          FROM Process
 			  WHERE status= 'PENDING'
 			)
 			AND receiver IN (
@@ -164,8 +176,10 @@ WHERE sender = myid AND doc_id IN (
 
 15. sender individual query
 
-SELECT doc_id, subject
-FROM Document
+SELECT doc_id, subject,details
+FROM Document d1
+JOIN Document_details d2
+ON d1.doc_id = d2.doc_id
 WHERE sender = myid AND receiver = hisid AND doc_id IN (
 				  	SELECT doc_id
 				  	FROM Process
@@ -180,7 +194,7 @@ FROM Postal_charges
 17. Indicate GOI GOM DTE BU
 
 SELECT organisation, COUNT(doc_id) AS Number
-FROM Document
+FROM Document_details
 GROUP BY organisation
 
 18. Total inward outward
@@ -325,7 +339,7 @@ VALUES(5,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@
 
 ******************************************************************************************************************************************************
 INSERT INTO Document()  
-VALUES(1,100,,10/12/1990,"hemang"` );
+VALUES(1,100,10/12/1990,"hemang","keivan" );
 
 INSERT INTO Document()  
 VALUES(2,100,10/12/1991,"keivan","om");
@@ -351,3 +365,39 @@ INSERT INTO Process()
 VALUES(4,100,"ACCEPTED",10/12/1990,"Good");
 
 ******************************************************************************************************************************************************
+
+UPLOAD QUERIES
+NEW BUTTON -PRESSED
+DELIMITER //
+CREATE PROCEDURE totalcount()
+ BEGIN
+
+INSERT INTO Process(user_id,doc_id,movement_date)
+VALUES("curr_id","doc_id", date);
+INSERT INTO Document_details(subject,no_of_documents,details,organisation)
+VALUES("subject","no.of documents","details","organisation")
+INSERT INTO Document(sender,receiver)
+VALUES("cur_id","to_id")
+
+
+
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE totalcount()
+ BEGIN
+
+INSERT INTO Process(user_id,doc_id,movement_date)
+VALUES("curr_id","doc_id", date);
+INSERT INTO Document_details(subject,no_of_documents,details,organisation)
+VALUES("subject","no.of documents","details","organisation")
+INSERT INTO Document(sender,receiver)
+VALUES("cur_id","to_id")
+
+
+
+END //
+DELIMITER ;
+
+
