@@ -103,12 +103,12 @@
                     <img src="{{ url_for('static', filename='images/user.png') }}" width="48" height="48" alt="User" />
                 </div>
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{session.username}}</div>
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ session.userid }}</div>
                     <div class="email">{{ session.email }}</div>
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
-                            <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                            <li><a href="/profile"><i class="material-icons">person</i>Profile</a></li>
                             <li role="seperator" class="divider"></li>
                             <li><a href="/logout/"><i class="material-icons">input</i>Sign Out</a></li>
                         </ul>
@@ -133,19 +133,19 @@
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <a href="" >
+                                <a href="/history/received" >
                                     <i class="material-icons">undo</i>
                                     <span>Recieved</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="" >
+                                <a href="/history/sent" >
                                     <i class="material-icons">redo</i>
                                     <span>Sent</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="" >
+                                <a href="/history" >
                                     <i class="material-icons">select_all</i>
                                     <span>Overall</span>
                                 </a>
@@ -153,7 +153,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="/database/">
+                        <a href="/upload/">
                             <i class="material-icons">content_paste</i>
                             <span>My Documents</span>
                         </a>
@@ -172,12 +172,18 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/existing_doc/" disabled>
+                                <a href="/existing_doc" >
                                     <i class="material-icons">history</i>
                                     <span>Existing</span>
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li>
+                        <a href="/statistics">
+                            <i class="material-icons">timeline</i>
+                            <span>Statistics</span>
+                        </a>
                     </li>
                 </ul>
             </div>
