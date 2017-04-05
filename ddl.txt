@@ -71,10 +71,10 @@ CREATE TABLE Postal_charges(
 );
  
 CREATE TABLE Process(
-    movement_date date NOT NULL,
+    movement_date datetime NOT NULL DEFAULT NOW(),
     comment varchar(255) NULL,
     user_id varchar (255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES User(user_id),
     doc_id int NOT NULL ,
     FOREIGN KEY (doc_id) REFERENCES Document(doc_id) ON DELETE CASCADE ON UPDATE CASCADE,
     status varchar(50) DEFAULT 'PENDING'
