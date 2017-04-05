@@ -26,13 +26,10 @@ def login_required(f):
 
 @app.route('/')
 def homepage():
-    if (session.get('logged_in') == True):
-        if (session['logged_in'] == True):
-            return redirect(url_for("history_page"))
-        else:
-            return redirect(url_for("login_page"))
-    else:
-        return redirect(url_for("login_page"))
+	if(session.get('logged_in')):
+		if(session['logged_in']):
+			return redirect(url_for('home'))
+	return render_template("homepage.html")
 
 
 @app.route('/forgot-password/')
@@ -67,11 +64,11 @@ def upload():
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
-@app.route('/existing_doc/<int:variable>')
+@app.route('/existing_doc/<variable>')
 @login_required
 def existing_doc(variable):
     c, conn = connection()
-    c.execute("SELECT * FROM User  WHERE user_id = "+format(variable)+"")
+    c.execute("SELECT * FROM User WHERE user_id = (%s)", [thwart(variable)])
     #conn.commit()
     data = c.fetchall()
     return render_template("existing_doc.html", data = data)
@@ -89,12 +86,41 @@ def database():
     data = c.fetchall()
     return render_template("database.html", data = data)
 
+@app.route('/history/received')
+def history_recieved():
+	c, conn = connection()
+	###############QUERY FOR Received HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Received History")
+
+@app.route('/history/sent')
+def history_sent():
+	c, conn = connection()
+	###############QUERY FOR Sent HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Sent History")
+
 @app.route('/history/')
 def history_page():
-	flash("flash test!!!!")
-	# flash("fladfasdfsaassh test!!!!")
-	# flash("asdfas asfsafs!!!!")
-	return render_template("history.html")
+	c, conn = connection()
+	###############QUERY FOR OVERALL HISTORY
+	c.execute("SELECT * FROM User")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("history.html", data = data, text = "Overall History")
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -124,14 +150,14 @@ def register_page():
             password = sha256_crypt.encrypt((str(form.password.data)))
             c, conn = connection()
 
-            x = c.execute("SELECT * FROM User WHERE username = (%s)",[thwart(username)])
+            x = c.execute("SELECT * FROM User WHERE user_id = (%s)",[thwart(username)])
 
             if int(x) > 0:
                 print ("That username is already taken, please choose another")
                 return render_template('sign-up.html', form=form, condition="Username already exists.")
 
             else:
-                data = c.execute("INSERT INTO User (username, password, email_id, department) VALUES (%s,%s,%s,%s)",
+                c.execute("INSERT INTO User (user_id, password, email_id, department) VALUES (%s,%s,%s,%s)",
                 	[ thwart(username), thwart(password), thwart(email), thwart(department)])
                 conn.commit()
                 print("Thanks for registering!")
@@ -139,10 +165,9 @@ def register_page():
                 conn.close()
                 gc.collect()
                 session['logged_in'] = True
-                session['userid'] = data
-                session['username'] = username
+                session['userid'] = username
                 session['email'] = email
-                return redirect(url_for('upload'))
+                return redirect(url_for('home'))
         print ("Nothing happened")
         return render_template("sign-up.html", form=form , condition = "Register for New User!" )
     except Exception as e:
@@ -160,7 +185,7 @@ def login_page():
         c, conn = connection()
         if request.method == "POST":
 
-            data = c.execute("SELECT * FROM User WHERE username = (%s)",
+            data = c.execute("SELECT * FROM User WHERE user_id = (%s)",
                              [thwart(request.form['username'])])
 
             data = c.fetchone()
@@ -170,9 +195,8 @@ def login_page():
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
-                session['username'] = request.form['username']
+                session['userid'] = request.form['username']
                 session['email'] = email
-                session['userid'] = userid
                 print (session['username'])
                 print ("You are now logged in")
                 return redirect(url_for("home"))

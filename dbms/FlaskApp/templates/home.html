@@ -19,7 +19,6 @@
                                 <th>Pass</th>
                                 <th>email</th>
                                 <th>dept</th>
-                                <th>name</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -28,17 +27,15 @@
                                 <th>Pass</th>
                                 <th>email</th>
                                 <th>dept</th>
-                                <th>name</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             {% for user in data %}
-                            <tr onclick="window.document.location='/existing_doc/'+{{ user[0] }};">
+                            <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
                                 <td>{{ user[0] }}</td>
                                 <td>{{ user[1].count("aa") }}</td>
                                 <td>{{ user[2] }}</td>
                                 <td>{{ user[3] }}</td>
-                                <td>{{ user[4] }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
