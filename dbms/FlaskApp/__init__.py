@@ -48,6 +48,9 @@ def home():
 	c.execute("SELECT * FROM User")
 	conn.commit()
 	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
 	return render_template("home.html", data=data)
 
 @app.route('/outward/')	
@@ -71,12 +74,38 @@ def existing_doc(variable):
     c.execute("SELECT * FROM User WHERE user_id = (%s)", [thwart(variable)])
     #conn.commit()
     data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
     return render_template("existing_doc.html", data = data)
 
 @app.route('/new_doc/')
 @login_required
 def new_doc():
-    return render_template("new_doc.html")
+	c, conn = connection()
+	c.execute("SELECT DISTINCT department FROM User")
+	conn.commit()
+	data = c.fetchall()
+	dept = []
+	for u in data:
+		dept.append(u[0])
+	users = []
+	i = 0
+	for d in dept:
+		print d
+		c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
+		conn.commit()
+		data = c.fetchall()
+		names = []
+		for u in data:
+			names.append(u[0])
+		users.append(names)
+		print users[i]
+		i = i+1
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("new_doc.html", users = users, dept = dept)
 
 @app.route('/database/')
 def database():
@@ -84,6 +113,9 @@ def database():
     c.execute("SELECT * FROM User")
     conn.commit()
     data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
     return render_template("database.html", data = data)
 
 @app.route('/history/received')
@@ -204,7 +236,8 @@ def login_page():
             else:
                 error = "Invalid credentials, try again."
                 print (error)
-
+        c.close()
+        conn.close()
         gc.collect()
 
         return render_template("sign-in.html", error=error)

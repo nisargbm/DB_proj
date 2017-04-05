@@ -1,5 +1,4 @@
 ﻿{% extends "dashboard.html" %} {% block title %}Home{% endblock %} {% block body %}
-
 <section class="content">
     <div class="container-fluid">
         <div class="row clearfix">
@@ -104,40 +103,26 @@
                                 <div class="card">
                                     <div class="header">
                                         <h2>
-                               Forward To
-
-                            </h2>
+                                            Forward To
+                                        </h2>
 
                                     </div>
                                     <div class="body">
                                         <div class="row clearfix">
-                                            <div class="col-sm-6">
-                                                <select class="form-control show-tick">
-                                                    <option value="">Department</option>
-                                                    <option value="10">CS-IT</option>
-                                                    <option value="20">Electrical</option>
-                                                    <option value="30">Electronics</option>
-                                                    <option value="40">Civil</option>
-                                                    <option value="50">Mechanical</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <select class="form-control">
-                                                    <option value="">Person</option>
-                                                    <option value="10">A</option>
-                                                    <option value="20">B</option>
-                                                    <option value="30">C</option>
-                                                    <option value="40">D</option>
-                                                    <option value="50">E</option>
+                                            <div class="form-control col-sm-12">
+                                                <select id="main-style">
+                                                    <option>-- Please Select Department --</option>
+                                                    {% for i in range(dept|length) %}
+                                                    <option class="option_data {color:'{{ ",".join(users[i]) }}'}">{{ dept[i] }}</option>
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <button type="button" class="btn btn-primary m-t-15 waves-effect">Upload</button>
                         </div>
-                        <button type="button" class="btn btn-primary m-t-15 waves-effect">Upload</button>
-                    </div>
                 </div>
             </div>
         </div>

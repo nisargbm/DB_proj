@@ -24,14 +24,39 @@
     <!-- <link href="css/style.css" rel="stylesheet"> -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-
-    <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
-    <!-- <link href="css/themes/all-themes.css" rel="stylesheet" /> -->
+<!-- <link href="css/themes/all-themes.css" rel="stylesheet" /> -->
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/themes/all-themes.css') }}">
 
 <!-- Jquery Core Js -->
 <!-- <script src="plugins/jquery/jquery.min.js"></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-metadata/jquery.metadata.js') }}"></script>
+
+
+<script type="text/javascript">
+        $(document).ready(function(){
+            $("#main-style").change(function(){
+                $("#main-style option:selected").each(function(){
+                    var colour_data = $(this).metadata();
+                    if(colour_data.color){
+                        var color = colour_data.color;
+                        var selectObj = $("<select></select>");
+                        var colorArray = color.split(",");
+                        for(var i = 0; i < colorArray.length; i++){
+                            selectObj.append("<option value='" + colorArray[i] + "'>" + colorArray[i] + "</option>");
+                        }
+                        $("#result-box").html(selectObj);
+                        $("#result-box").show("slow");
+                    }else{
+                        $("#result-box").hide("slow", function(){
+                            $("#result-box").html("");
+                        });
+                    }
+                });             
+            });
+        });
+</script>
 
 </head>
 
