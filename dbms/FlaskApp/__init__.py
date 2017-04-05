@@ -34,56 +34,56 @@ class RegistrationForm(Form):
     confirm = PasswordField('Repeat Password')
     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice', [validators.Required()])
 
-class InwardNewForm(Form):
-	id = TextField('user_id')
-	subject = TextField('subject',[validator.Length(min = 1,max = 20)])
-	doc_details = TextField('document_details',[validator.Length(min=1, max = 1000)])
-	organization = TextField('organization',[validator.Length(min=1,max = 100)])
-	no_docs = TextField('no_documents')
-	to = TextField('forward_person')
-	place = TextField('place_of_recieving',[validator.Length(min = 1,max = 1000)]) 
+# class InwardNewForm(Form):
+# 	id = TextField('user_id')
+# 	subject = TextField('subject',[validators.Length(min = 1,max = 20)])
+# 	doc_details = TextField('document_details',[validators.Length(min=1, max = 1000)])
+# 	organization = TextField('organization',[validators.Length(min=1,max = 100)])
+# 	no_docs = TextField('no_documents')
+# 	to = TextField('forward_person')
+# 	place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
 
-@app.route('/new_doc/', methods=["GET","POST"])
-@login_required
-def new_doc():
-	try:
-        form = InwardNewForm(request.form)
-        print("inside Inward page")
-        if request.method == "POST" :
-            sender  = form.id.data
-            subject = form.subject.data
-            doc_details = form.doc_details.data
-            org = form.organization.data
-            no_docs = form.no_docs.data
-            reciever = form.to.data
-            place = form.place.data
-            c, conn = connection()
+# @app.route('/new_doc/', methods=["GET","POST"])
+# @login_required
+# def new_doc():
+#     try:
+#         form = InwardNewForm(request.form)
+#         print("inside Inward page")
+#         if request.method == "POST" :
+#             sender  = form.id.data
+#             subject = form.subject.data
+#             doc_details = form.doc_details.data
+#             org = form.organization.data
+#             no_docs = form.no_docs.data
+#             reciever = form.to.data
+#             place = form.place.data
+#             c, conn = connection()
 
 
-            # TODO : queries by hemang and maneesh
+#             # TODO : queries by hemang and maneesh
 
-            # c.execute("INSERT INTO Document_details (subject, number_of_documents, organisation, details) VALUES (%s,%s,%s,%s)",
-            # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-            # conn.commit()
+#             # c.execute("INSERT INTO Document_details (subject, number_of_documents, organisation, details) VALUES (%s,%s,%s,%s)",
+#             # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+#             # conn.commit()
 
-            # c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-            # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-            # conn.commit()
+#             # c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
+#             # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+#             # conn.commit()
 
-            # c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-            # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-            # conn.commit()
+#             # c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
+#             # 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+#             # conn.commit()
 
-            print("Thanks for uploading!")
-            c.close()
-            conn.close()
-            gc.collect()
-            return redirect(url_for('home'))
-        print ("Nothing happened")
-        return render_template("history.html")
-    except Exception as e:
-        print (str(e))
-        return(str(e))
+#             print("Thanks for uploading!")
+#             c.close()
+#             conn.close()
+#             gc.collect()
+#             return redirect(url_for('home'))
+#         print ("Nothing happened")
+#         return render_template("history.html")
+#     except Exception as e:
+#         print (str(e))
+#         return(str(e))
 
 @app.route('/')
 def homepage():
@@ -153,7 +153,7 @@ def new_doc():
 	users = []
 	i = 0
 	for d in dept:
-		print d
+		print (d)
 		c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
 		conn.commit()
 		data = c.fetchall()
@@ -161,7 +161,7 @@ def new_doc():
 		for u in data:
 			names.append(u[0])
 		users.append(names)
-		print users[i]
+		print (users[i])
 		i = i+1
 	c.close()
 	conn.close()

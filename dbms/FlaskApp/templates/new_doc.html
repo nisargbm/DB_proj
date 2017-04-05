@@ -1,102 +1,118 @@
-﻿{% extends "dashboard.html" %} {% block title %}Home{% endblock %} {% block body %}
+﻿{% extends "dashboard.html" %} {% block title %} Home {% endblock %} {% block body %}
+
+<script type="text/javascript">
+        $(document).ready(function(){
+            $("#main-style").change(function(){
+                $("#main-style option:selected").each(function(){
+                    var colour_data = $(this).metadata();
+                    if(colour_data.color){
+                        var color = colour_data.color;
+                        var selectObj = $("<select></select>");
+                        var colorArray = color.split(",");
+                        for(var i = 0; i < colorArray.length; i++){
+                            selectObj.append("<option value='" + colorArray[i] + "'>" + colorArray[i] + "</option>");
+                        }
+                        $("#result-box").html(selectObj);
+                        $("#result-box").show("slow");
+                    }else{
+                        $("#result-box").hide("slow", function(){
+                            $("#result-box").html("");
+                        });
+                    }
+                });             
+            });
+        });
+</script>
+
 <section class="content">
     <div class="container-fluid">
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
-                    <<form action="/new_doc/" id="sign_up" method="POST">
-                    <div class="header">
-                        <h2>From</h2>
-
-                    </div>
-                    <div class="body">
-
-                        <div class="row clearfix">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        <textarea disabled rows="1" class="form-control no-resize" name="user_id">{{ session.userid }}</textarea>
+                    <form action="/new_doc/" id="sign_up" method="POST">
+                        <div class="header">
+                            <h2>From</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea disabled rows="1" class="form-control no-resize" name="user_id">{{ session.userid }}</textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="header">
-                        <h2>Subject</h2>
-
-                    </div>
-                    <div class="body">
-
-                        <div class="row clearfix">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        <textarea rows="1" class="form-control no-resize" placeholder="Please type what you want..." name="subject"></textarea>
+                        <div class="header">
+                            <h2>Subject</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="1" class="form-control no-resize" placeholder="Please type what you want..." name="subject"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="header">
-                        <h2>Document Details</h2>
-
-                    </div>
-                    <div class="body">
-
-                        <div class="row clearfix">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        <textarea rows="4" class="form-control no-resize" placeholder="Please type what you want..." name="document_details"></textarea>
+                        <div class="header">
+                            <h2>Document Details</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="4" class="form-control no-resize" placeholder="Please type what you want..." name="document_details"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="header">
-                        <h2>Organization</h2>
-
-                    </div>
-                    <div class="body">
-
-                        <div class="row clearfix">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        <textarea rows="1" class="form-control no-resize" placeholder="Please type what you want..." name="organization"></textarea>
+                        <div class="header">
+                            <h2>Organization</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="1" class="form-control no-resize" placeholder="Please type what you want..." name="organization"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="header">
-                        <h2>No. of documents</h2>
-
-                    </div>
-                    <div class="body">
-
-                        <div class="row clearfix">
-                            <!--  <div class="col-sm-12">
+                        <div class="header">
+                            <h2>No. of documents</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <!--  <div class="col-sm-12">
                                     <div class="form-group">
                                         <div class="form-line">
                                             <textarea rows="1" class="form-control no-resize" placeholder="Please type what you want..."></textarea>
                                         </div>
                                     </div>
                                 </div> -->
-                            <div class="col-sm-6">
-                                <select class="form-control show-tick" name="no_documents">
-                                    <option disabled value="">No of Documents</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                </select>
+                                <div class="col-sm-6">
+                                    <select class="form-control show-tick" name="no_documents">
+                                        <option disabled value="">No of Documents</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="row clearfix">
@@ -106,42 +122,25 @@
                                         <h2>
                                             Forward To
                                         </h2>
-
                                     </div>
                                     <div class="body">
                                         <div class="row clearfix">
-                                            <div class="form-control col-sm-12">
+                                            <div class="form-control">
                                                 <select id="main-style">
                                                     <option>-- Please Select Department --</option>
                                                     {% for i in range(dept|length) %}
-                                                    <option class="option_data {color:'{{ ",".join(users[i]) }}'}">{{ dept[i] }}</option>
-                                            <div class="col-sm-6">
-                                                <select class="form-control show-tick" name="department">
-                                                    <option value="">Department</option>
-                                                    <option value="10">CS-IT</option>
-                                                    <option value="20">Electrical</option>
-                                                    <option value="30">Electronics</option>
-                                                    <option value="40">Civil</option>
-                                                    <option value="50">Mechanical</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <select class="form-control" name="forward_person">
-                                                    <option value="">Person</option>
-                                                    <option value="10">A</option>
-                                                    <option value="20">B</option>
-                                                    <option value="30">C</option>
-                                                    <option value="40">D</option>
-                                                    <option value="50">E</option>
+                                                    <option class="option_data {color:'{{ " , ".join(users[i]) }}'}">{{ dept[i] }}</option>
+                                                    {% endfor %}
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary m-t-15 waves-effect">Upload</button>
                         </div>
-                         <div class="header">
+                        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
+                </div>
+                <!-- <div class="header">
                         <h2>Place of recieving</h2>
 
                     </div>
@@ -160,11 +159,9 @@
                         
 
                     </div>
-                    <button type="submit" class="btn btn-primary m-t-15 waves-effect" style="margin-left:10px; margin-bottom: 10px ">Upload</button>
-                </div>
+                    <button type="submit" class="btn btn-primary m-t-15 waves-effect" style="margin-left:10px; margin-bottom: 10px ">Upload</button> -->
             </div>
         </div>
     </div>
 </section>
-
 {% endblock %}
