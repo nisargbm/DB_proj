@@ -26,26 +26,26 @@ CREATE TABLE Mobile(
 ALTER TABLE Mobile ADD CONSTRAINT fr2 FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE Document_details(
-    doc_id int ,
+    doc_id int,
     subject varchar(255) NOT NULL,
     number_of_documents int NOT NULL,
 	CHECK (number_of_documents >=1),
     organisation varchar (255) NOT NULL,
-	details varchar (255)
+	details varchar (255),
     PRIMARY KEY (doc_id)     
 );
 
 CREATE TABLE Document(
-	sr_no int AUTOINCREMENT=1,
-    doc_id int NOT NULL ,
-    Date_of_receipt datetime DEFAULT NOW(),
+	sr_no int AUTO_INCREMENT,
+    doc_id int NOT NULL,
+    Date_of_receipt timestamp DEFAULT NOW(),
     sender varchar (255) NOT NULL,
     receiver varchar (255) NULL,
-    FOREIGN KEY (doc_id) REFERENCES Document_details(doc_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (doc_id) REFERENCES Document_details(doc_id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (sr_no)     
 );
  CREATE TABLE Inward(
-    inward_id int AUTOINCREMENT=1,
+    inward_id int AUTO_INCREMENT,
     place_of_receiving varchar(255) NOT NULL,
     doc_id int NOT NULL,
     FOREIGN KEY (doc_id) REFERENCES Document_details(doc_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -53,7 +53,7 @@ CREATE TABLE Document(
 );
  
 CREATE TABLE Outward(
-    outward_id int AUTOINCREMENT=1 ,
+    outward_id int AUTO_INCREMENT,
     sending_place varchar(255) NOT NULL,
     to_whom_addressed varchar(255) NOT NULL,
     doc_id int NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE Outward(
 );
  
 CREATE TABLE Postal_charges(
-    post_id int AUTOINCREMENT=1,
+    post_id int AUTO_INCREMENT,
     type_of_post varchar(50) NULL,
     estimated_cost int NOT NULL,
     outward_id int NOT NULL,
