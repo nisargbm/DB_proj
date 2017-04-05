@@ -1,16 +1,15 @@
 1.Hiearchy
 
-SELECT sender,receiver,Date_of_receipt FROM Document
-GROUP BY doc_id 
-HAVING doc_id = myid
+SELECT sender,receiver,Date_of_receipt FROM Document 
+WHERE doc_id = 2
 ORDER BY Date_of_receipt
 
 2. Current
 SELECT receiver FROM Document d1
-WHERE d1.doc_id = myid AND d1.Date_of_receipt IN (
+WHERE d1.doc_id = 1 AND d1.Date_of_receipt IN (
 					SELECT MAX(d2.Date_of_receipt)
 					FROM Document d2
-					WHERE d2.doc_id=myid
+					WHERE d2.doc_id=1
 				  );
 
 3.1 Docs submitted 
@@ -19,10 +18,9 @@ SELECT doc_id,subject,details
 FROM Document_details 
 WHERE doc_id IN(
 					SELECT doc_id
-					FROM Process
-					GROUP BY user_id
-					HAVING user_id = myid
-					ORDER BY DESC movement_date
+					FROM Document 
+					WHERE sender ='keivan'
+					ORDER BY Date_of_receipt DESC
 			   );
 
 
@@ -32,50 +30,53 @@ SELECT doc_id,subject,details
 FROM Document_details 
 WHERE doc_id IN (
 		   SELECT doc_id
-		   FROM Document,  
-		   WHERE receiver = myid AND doc_id IN (
+		   FROM Document  
+		   WHERE receiver = 'keivan' AND doc_id IN (
 			    				    SELECT doc_id
 			    				    FROM Process
 			    				    WHERE status= 'PENDING'
 						       )
 				);
 
+3.3 Docs created 
+
+SELECT doc_id,subject,details
+FROM Process
+NATURAL JOIN Document_details
+WHERE user_id = 'om' AND status= 'CREATED'
+ORDER BY movement_date DESC;
 
 4.Doc Status
 
 SELECT doc_id,subject,details,status,comment
-FROM Process p
-JOIN Document_details d
-ON p.doc_id = d.doc_id
-WHERE user_id = myid
+FROM Process
+NATURAL JOIN Document_details 
+WHERE user_id = 'maneesh'
 ORDER BY movement_date DESC ;
 
 5.docs pending
 
 SELECT doc_id,subject,details
-FROM Process p
-JOIN Document_details d
-ON p.doc_id = d.doc_id
-WHERE user_id = myid AND status = 'PENDING'
+FROM Process 
+NATURAL JOIN Document_details 
+WHERE user_id = 'om' AND status = 'PENDING'
 ORDER BY movement_date DESC ;
 
 6.docs ACCEPTED
 
 SELECT doc_id,subject,details
-FROM Process p
-JOIN Document_details d
-ON p.doc_id = d.doc_id
+FROM Process 
+NATURAL JOIN Document_details 
 WHERE user_id = myid AND status = 'ACCEPTED'
-ORDER BY DESC movement_date;
+ORDER BY movement_date DESC;
 
 7.docs REJECTED
 
 SELECT doc_id,subject,details
-FROM Process p
-JOIN Document_details d
-ON p.doc_id = d.doc_id
+FROM Process 
+NATURAL JOIN Document_details 
 WHERE user_id = myid AND status = 'REJECTED'
-ORDER BY DESC movement_date;
+ORDER BY movement_date DESC;
 
 8.postal charges
 
@@ -91,50 +92,78 @@ WHERE outward_id IN (
 			       	       )
 		    );
 
-9. total list of pending docs
+9.1 total list of pending docs
 
-SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id
+SELECT DISTINCT doc_id,subject,details
+FROM Document
+NATURAL JOIN Document_details 
 WHERE doc_id IN (
 	             SELECT doc_id
 	             FROM Process
 	             WHERE status= 'PENDING'
 	        );
 
-10. total list of ACCEPTED docs
+9.2 total no. of pending docs
 
-SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id 
+SELECT COUNT(DISTINCT doc_id)
+FROM Document
+NATURAL JOIN Document_details 
 WHERE doc_id IN (
-                    SELECT doc_id
-	            FROM Process
-	            WHERE status= 'ACCEPTED'
+	             SELECT doc_id
+	             FROM Process
+	             WHERE status= 'PENDING'
 	        );
 
-11. total list of REJECTED docs
+10.1 total list of ACCEPTED docs
 
-SELECT COUNT(DISTINCT doc_id) AS Number, doc_id, subject,details
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id 
+SELECT DISTINCT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details 
+WHERE doc_id IN (
+                    SELECT doc_id
+	                FROM Process
+	                WHERE status= 'ACCEPTED'
+	            );
+
+10.2 total no. of ACCEPTED docs
+
+SELECT COUNT(DISTINCT doc_id)
+FROM Document
+NATURAL JOIN Document_details 
+WHERE doc_id IN (
+	                SELECT doc_id
+	                FROM Process
+	                WHERE status= 'ACCEPTED'
+	            );
+
+11.1 total list of REJECTED docs
+
+SELECT DISTINCT doc_id, subject,details
+FROM Document 
+NATURAL JOIN Document_details
 WHERE doc_id IN (
 	            SELECT doc_id
 	            FROM Process
 	            WHERE status= 'REJECTED'
 	        );
 
+11.2 total no. of rejected documents
+
+SELECT COUNT(DISTINCT doc_id)
+FROM Document
+NATURAL JOIN Document_details 
+WHERE doc_id IN (
+	                SELECT doc_id
+	                FROM Process
+	                WHERE status= 'REJECTED'
+	            );
 
 12. receive individual query
 
 SELECT doc_id, subject,details
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id
-WHERE sender = hisid AND receiver = myid AND doc_id IN (
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = "nisarg" AND receiver = "maneesh" AND doc_id IN (
 				  	SELECT doc_id
 				  	FROM Process
 				  	WHERE status= 'PENDING'
@@ -143,33 +172,31 @@ WHERE sender = hisid AND receiver = myid AND doc_id IN (
 13. receive department query
 
 SELECT doc_id, subject,details
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id
-WHERE receiver = myid AND doc_id IN (
+FROM Document
+NATURAL JOIN Document_details
+WHERE receiver = "maneesh" AND doc_id IN (
 			  SELECT doc_id
 		              FROM Process
 			  WHERE status= 'PENDING'
 			)
 			AND sender IN (
-			  SELECT username
+			  SELECT user_id
 			  FROM User
-			  WHERE department = input
+			  WHERE department = "COMPS"
 			);
 
 14. sent department query
 
 SELECT doc_id, subject, details
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id
-WHERE sender = myid AND doc_id IN (
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = " AND doc_id IN (
 			  SELECT doc_id
 		          FROM Process
 			  WHERE status= 'PENDING'
 			)
 			AND receiver IN (
-			  SELECT username
+			  SELECT user_id
 			  FROM User
 			  WHERE department = input
 			);
@@ -177,9 +204,8 @@ WHERE sender = myid AND doc_id IN (
 15. sender individual query
 
 SELECT doc_id, subject,details
-FROM Document d1
-JOIN Document_details d2
-ON d1.doc_id = d2.doc_id
+FROM Document
+NATURAL JOIN Document_details
 WHERE sender = myid AND receiver = hisid AND doc_id IN (
 				  	SELECT doc_id
 				  	FROM Process
@@ -322,47 +348,87 @@ FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 
 ******************************************************************************************************************************************************
-INSERT INTO User(username,password,email_id,department,user_id)  
-VALUES(1,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abc@xyz.com","IT","hemang");
+INSERT INTO User(password,email_id,department,user_id)  
+VALUES("f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abc@xyz.com","IT","hemang");
 
-INSERT INTO User(username,password,email_id,department,user_id)  
-VALUES(2,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abcd@xyz.com","IT","om");
+INSERT INTO User(password,email_id,department,user_id)  
+VALUES("f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abcd@xyz.com","IT","om");
 
-INSERT INTO User(username,password,email_id,department,user_id)  
-VALUES(3,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","COMPS","maneesh");
+INSERT INTO User(password,email_id,department,user_id)  
+VALUES("f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abcde@xyz.com","COMPS","maneesh");
 
-INSERT INTO User(username,password,email_id,department,user_id)  
-VALUES(4,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","COMPS","nisarg");
+INSERT INTO User(password,email_id,department,user_id)  
+VALUES("f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abd@xyz.com","COMPS","nisarg");
 
-INSERT INTO User(username,password,email_id,department,user_id)  
-VALUES(5,"f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","ab@xyz.com","EXTC","keivan");
-
-******************************************************************************************************************************************************
-INSERT INTO Document()  
-VALUES(1,100,10/12/1990,"hemang","keivan" );
-
-INSERT INTO Document()  
-VALUES(2,100,10/12/1991,"keivan","om");
-
-INSERT INTO Document()  
-VALUES(3,100,10/12/1992,"om","nisarg");
-
-INSERT INTO Document()  
-VALUES(4,100,10/12/2017,"nisarg","maneesh");
+INSERT INTO User(password,email_id,department,user_id)  
+VALUES("f71ffd19645b079824921b7229f5a44bb61a506d06ca4d599f2053e7e22e532d","abf@xyz.com","EXTC","keivan");
 
 ******************************************************************************************************************************************************
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(1,"hemang","keivan" );
 
-INSERT INTO Process()
-VALUES(1,100,"ACCEPTED",10/12/1990,"Good");
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(1,"keivan","om");
 
-INSERT INTO Process()
-VALUES(5,100,"ACCEPTED",10/12/1990,"Good");
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(1,"om","nisarg");
 
-INSERT INTO Process()
-VALUES(2,100,"ACCEPTED",10/12/1990,"Good");
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(1,"nisarg","maneesh");
 
-INSERT INTO Process()
-VALUES(4,100,"ACCEPTED",10/12/1990,"Good");
+
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(2,"om","keivan" );
+
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(2,"keivan","hemang");
+
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(2,"hemang","maneesh");
+
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(2,"maneesh","nisarg");
+
+INSERT INTO Document(doc_id,sender,receiver)  
+VALUES(2,"nisarg","maneesh");
+
+
+******************************************************************************************************************************************************
+INSERT INTO Document_details (doc_id,subject,number_of_documents,organisation,details)
+VALUES(1,"abc",3,"GOI","qwer");
+INSERT INTO Document_details (doc_id,subject,number_of_documents,organisation,details)
+VALUES(2,"abcd",10,"DTE","qwerty");
+******************************************************************************************************************************************************
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("hemang",1,"CREATED","NO COMMENTS");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("om",2,"CREATED","NO COMMENTS");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("keivan",1,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("om",1,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("nisarg",1,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("maneesh",1,"PENDING","NO COMMENTS");
+
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("keivan",2,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("hemang",2,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("maneesh",2,"ACCEPTED","Good");
+
+INSERT INTO Process(user_id,doc_id,status,comment)
+VALUES("nisarg",2,"REJECTED","reasons");
 
 ******************************************************************************************************************************************************
 
@@ -400,4 +466,5 @@ VALUES("cur_id","to_id")
 END //
 DELIMITER ;
 
+INWARD QUERIES
 
