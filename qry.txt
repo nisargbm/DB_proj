@@ -158,7 +158,7 @@ WHERE doc_id IN (
 	                WHERE status= 'REJECTED'
 	            );
 
-12. receive individual query
+12.1 receive individual pending query
 
 SELECT doc_id, subject,details
 FROM Document
@@ -169,7 +169,29 @@ WHERE sender = "nisarg" AND receiver = "maneesh" AND doc_id IN (
 				  	WHERE status= 'PENDING'
 			   	       );
 
-13. receive department query
+12.2 receive individual accepted query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = "nisarg" AND receiver = "maneesh" AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'ACCEPTED'
+			   	       );
+
+12.3 receive individual rejected query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = "nisarg" AND receiver = "maneesh" AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'REJECTED'
+			   	       ); 	       
+
+13.1 receive department PENDING query
 
 SELECT doc_id, subject,details
 FROM Document
@@ -185,7 +207,39 @@ WHERE receiver = "maneesh" AND doc_id IN (
 			  WHERE department = "COMPS"
 			);
 
-14. sent department query
+13.2 receive department ACCEPTED query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE receiver = "maneesh" AND doc_id IN (
+			  SELECT doc_id
+		              FROM Process
+			  WHERE status= 'ACCEPTED'
+			)
+			AND sender IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = "COMPS"
+			);
+
+13.3 receive department REJECTED query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE receiver = "maneesh" AND doc_id IN (
+			  SELECT doc_id
+		              FROM Process
+			  WHERE status= 'REJECTED'
+			)
+			AND sender IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = "COMPS"
+			);
+
+14.1 sent department PENDING query
 
 SELECT doc_id, subject, details
 FROM Document
@@ -201,7 +255,39 @@ WHERE sender = " AND doc_id IN (
 			  WHERE department = input
 			);
 
-15. sender individual query
+14.2 sent department ACCEPTED query
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = " AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'ACCEPTED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = input
+			);
+
+14.3 sent department REJECTED query
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = " AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'REJECTED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = input
+			);
+
+15.1 sender individual PENDING query
 
 SELECT doc_id, subject,details
 FROM Document
@@ -212,6 +298,27 @@ WHERE sender = myid AND receiver = hisid AND doc_id IN (
 				  	WHERE status= 'PENDING'
 			   	       );
 
+15.2 sender individual ACCEPTED query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = myid AND receiver = hisid AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'ACCEPTED'
+			   	       );
+
+15.3 sender individual REJECTED query
+
+SELECT doc_id, subject,details
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = myid AND receiver = hisid AND doc_id IN (
+				  	SELECT doc_id
+				  	FROM Process
+				  	WHERE status= 'REJECTED'
+			   	       );
 16. estimated cost
 
 SELECT SUM(estimated_cost) AS TOTAL COST
@@ -305,8 +412,135 @@ CREATE PROCEDURE totalcount(OUT total int)
 
 END //
 DELIMITER ;
+
+22.1 sent Department to Department pending
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'PENDING'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+
+22.2 sent Department to Department accepted
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'ACCEPTED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+
+22.3 sent Department to Department RECEIVED
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'RECEIVED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+
+23.1 RECEIVE Department to Department pending
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'PENDING'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
+
+23.2 RECEIVE Department to Department accepted
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'ACCEPTED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
+
+23.1 RECEIVE Department to Department rejected
+
+SELECT doc_id, subject, details
+FROM Document
+NATURAL JOIN Document_details
+WHERE         sender  IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = hisdept
+			);
+			  AND doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'REJECTED'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			);
 ******************************************************************************************************************************************************
-22.load data
+load data
+
 LOAD DATA INFILE 'c:/tmp/discounts.csv'
 INTO TABLE User
 FIELDS TERMINATED BY ','
