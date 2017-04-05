@@ -7,63 +7,32 @@
     <title>Document Tracking</title>
     <!-- Favicon-->
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
-    
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.css') }}">
     <!-- Animation Css -->
     <link href="{{ url_for('static', filename='plugins/node-waves/waves.css') }}" rel="stylesheet" />
     <!-- <link href="plugins/animate-css/animate.css" rel="stylesheet" /> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/animate-css/animate.css') }}">
-
-<!-- JQuery DataTable Css -->
-<link href="{{ url_for('static', filename='plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/animate-css/animate.css') }}">
+    <!-- Bootstrap Spinner Css -->
+    <link href="{{ url_for('static', filename='plugins/jquery-spinner/css/bootstrap-spinner.css') }}" rel="stylesheet">
+    <!-- JQuery DataTable Css -->
+    <link href="{{ url_for('static', filename='plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css') }}" rel="stylesheet">
     <!-- Custom Css -->
     <!-- <link href="css/style.css" rel="stylesheet"> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-
-<!-- <link href="css/themes/all-themes.css" rel="stylesheet" /> -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/themes/all-themes.css') }}">
-
-<!-- Jquery Core Js -->
-<!-- <script src="plugins/jquery/jquery.min.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-metadata/jquery.metadata.js') }}"></script>
-
-
-<script type="text/javascript">
-        $(document).ready(function(){
-            $("#main-style").change(function(){
-                $("#main-style option:selected").each(function(){
-                    var colour_data = $(this).metadata();
-                    if(colour_data.color){
-                        var color = colour_data.color;
-                        var selectObj = $("<select></select>");
-                        var colorArray = color.split(",");
-                        for(var i = 0; i < colorArray.length; i++){
-                            selectObj.append("<option value='" + colorArray[i] + "'>" + colorArray[i] + "</option>");
-                        }
-                        $("#result-box").html(selectObj);
-                        $("#result-box").show("slow");
-                    }else{
-                        $("#result-box").hide("slow", function(){
-                            $("#result-box").html("");
-                        });
-                    }
-                });             
-            });
-        });
-</script>
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- <link href="css/themes/all-themes.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/themes/all-themes.css') }}">
+    <!-- Jquery Core Js -->
+    <!-- <script src="plugins/jquery/jquery.min.js"></script> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-metadata/jquery.metadata.js') }}"></script>
 </head>
 
 <body class="theme-indigo">
-<!-- {% if session.logged_in %} -->
+    <!-- {% if session.logged_in %} -->
     <!-- Page Loader -->
-   <!--  <div class="page-loader-wrapper">
+    <!--  <div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
                 <div class="spinner-layer pl-red">
@@ -82,7 +51,7 @@
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
     <!-- #END# Overlay For Sidebars -->
-       <!-- Search Bar -->
+    <!-- Search Bar -->
     <div class="search-bar">
         <div class="search-icon">
             <i class="material-icons">search</i>
@@ -103,8 +72,7 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-
-                   {% if session.logged_in %}
+                    {% if session.logged_in %}
                     <li class="pull-right">
                         <a href="/logout/" class="js-right-sidebar" data-close="true">
                             <i class="material-icons">input</i>
@@ -118,7 +86,6 @@
         </div>
     </nav>
     <!-- #Top Bar -->
-
     <section>
         <!-- Left Sidebar -->
         <aside id="leftsidebar" class="sidebar">
@@ -158,19 +125,19 @@
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <a href="/history/received" >
+                                <a href="/history/received">
                                     <i class="material-icons">undo</i>
                                     <span>Recieved</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="/history/sent" >
+                                <a href="/history/sent">
                                     <i class="material-icons">redo</i>
                                     <span>Sent</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="/history" >
+                                <a href="/history">
                                     <i class="material-icons">select_all</i>
                                     <span>Overall</span>
                                 </a>
@@ -183,7 +150,6 @@
                             <span>My Documents</span>
                         </a>
                     </li>
-
                     <li>
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">file_upload</i>
@@ -191,13 +157,13 @@
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <a href="/new_doc/" >
+                                <a href="/new_doc/">
                                     <i class="material-icons">open_in_new</i>
                                     <span>New</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="/existing_doc" >
+                                <a href="/existing_doc">
                                     <i class="material-icons">history</i>
                                     <span>Existing</span>
                                 </a>
@@ -213,7 +179,6 @@
                 </ul>
             </div>
             <!-- #Menu -->
-
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
@@ -223,44 +188,31 @@
             <!-- #Footer -->
         </aside>
         <!-- #END# Left Sidebar -->
-
     </section>
-
-
-    {% block body %}
-      {% endblock %}
-      <!-- {% else %} -->
-     <!--  <header>this is vjti</header>
+    {% block body %} {% endblock %}
+    <!-- {% else %} -->
+    <!--  <header>this is vjti</header>
     {% endif %} -->
-
     <!-- Bootstrap Core Js -->
     <!-- <script src="plugins/bootstrap/js/bootstrap.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
-
-
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.min.js') }}"></script>
     <!-- Select Plugin Js -->
-   <!--  <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap-select/js/bootstrap-select.js') }}"></script>
-
-
+    <!--  <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/bootstrap-select/js/bootstrap-select.js') }}"></script>
     <!-- Slimscroll Plugin Js -->
     <!-- <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
-
-
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
     <!-- Waves Effect Plugin Js -->
     <!-- <script src="plugins/node-waves/waves.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='plugins/node-waves/waves.js') }}"></script>
-
-<!-- Custom Js -->
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/node-waves/waves.js') }}"></script>
+    <!-- Jquery Spinner Plugin Js -->
+    <script src="{{ url_for('static', filename='plugins/jquery-spinner/js/jquery.spinner.js') }}"></script>
+    <!-- Custom Js -->
     <!-- <script src="js/admin.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/admin.js') }}"></script>
-
-<!-- Demo Js -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <!-- Demo Js -->
     <!-- <script src="js/demo.js"></script> -->
-<script type="text/javascript" src="{{ url_for('static', filename='js/demo.js') }}"></script>
-
-
+    <script type="text/javascript" src="{{ url_for('static', filename='js/demo.js') }}"></script>
 </body>
 
 </html>

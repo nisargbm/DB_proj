@@ -151,9 +151,7 @@ def new_doc():
 	for u in data:
 		dept.append(u[0])
 	users = []
-	i = 0
 	for d in dept:
-		print (d)
 		c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
 		conn.commit()
 		data = c.fetchall()
@@ -161,8 +159,6 @@ def new_doc():
 		for u in data:
 			names.append(u[0])
 		users.append(names)
-		print (users[i])
-		i = i+1
 	c.close()
 	conn.close()
 	gc.collect()
@@ -228,7 +224,7 @@ def register_page():
         form = RegistrationForm(request.form)
         print("inside register page")
         if request.method == "POST" :
-            username  = form.username.data
+            username  = form.username.data.upper()
             email = form.email.data
             department = form.department.data
             password = sha256_crypt.encrypt((str(form.password.data)))
@@ -270,7 +266,7 @@ def login_page():
         if request.method == "POST":
 
             data = c.execute("SELECT * FROM User WHERE user_id = (%s)",
-                             [thwart(request.form['username'])])
+                             [thwart(request.form['username'].upper())])
 
             data = c.fetchone()
             password = data[1]
@@ -279,7 +275,7 @@ def login_page():
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
-                session['userid'] = request.form['username']
+                session['userid'] = request.form['username'].upper()
                 session['email'] = email
                 print (session['username'])
                 print ("You are now logged in")
