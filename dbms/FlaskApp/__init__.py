@@ -140,29 +140,75 @@ def existing_doc(variable):
     gc.collect()
     return render_template("existing_doc.html", data = data)
 
-@app.route('/new_doc/')
+
+
+class InwardNewForm(Form):
+	userid = TextField('user_id')
+	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
+	doc_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
+	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
+	no_docs = TextField('no_documents')
+	to = TextField('forward_person')
+	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
+
+@app.route('/new_doc/', methods=["GET","POST"])
 @login_required
 def new_doc():
-	c, conn = connection()
-	c.execute("SELECT DISTINCT department FROM User")
-	conn.commit()
-	data = c.fetchall()
-	dept = []
-	for u in data:
-		dept.append(u[0])
-	users = []
-	for d in dept:
-		c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
-		conn.commit()
-		data = c.fetchall()
-		names = []
-		for u in data:
-			names.append(u[0])
-		users.append(names)
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("new_doc.html", users = users, dept = dept)
+	try:
+		c, conn = connection()
+		form = InwardNewForm(request.form)		
+		if request.method == "POST" :
+			sender  = form.userid.data
+			subject = form.subject.data
+			doc_details = form.doc_details.data
+			org = form.organization.data
+			no_docs = form.no_docs.data
+			reciever = form.to.data
+			# place = form.place.data
+			print (sender)
+			print (subject)
+			print (doc_details)
+			print (org)
+			print (no_docs)
+			print(reciever)
+				# TODO : queries by hemang and maneesh
+
+				# c.execute("INSERT INTO Document_details (subject, number_of_documents, organisation, details) VALUES (%s,%s,%s,%s)",
+				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+				# conn.commit()
+
+				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
+				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+				# conn.commit()
+
+				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
+				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
+				# conn.commit()
+			print("Thanks for uploading!")
+			c.close()
+			conn.close()
+			gc.collect()
+			return redirect(url_for('home'))
+		else:
+			c.execute("SELECT DISTINCT department FROM User")
+			conn.commit()
+			data = c.fetchall()
+			dept = []
+			for u in data:
+				dept.append(u[0])
+			users = []
+			for d in dept:
+				c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
+				conn.commit()
+				data = c.fetchall()
+				names = []
+				for u in data:
+					names.append(u[0])
+				users.append(names)
+			return render_template("new_doc.html",form=form, users = users, dept = dept)
+	except Exception as e:
+		print (str(e))
+		return(str(e))
 
 @app.route('/database/')
 def database():

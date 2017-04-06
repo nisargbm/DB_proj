@@ -5,7 +5,7 @@
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
-                    <form action="/new_doc/" id="sign_up" method="POST">
+                    <form action="/new_doc/" id="new_doc" method="POST">
                         <div class="header">
                             <h2>From</h2>
                         </div>
@@ -23,7 +23,7 @@
                         <div class="header">
                             <h2>Subject</h2>
                         </div>
-                        <div class="body">
+                        <div class="body">       
                             <div class="row clearfix">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -70,7 +70,7 @@
                                 <div class="col-sm-3">
                                     <div class="input-group spinner" data-trigger="spinner">
                                         <div class="form-line">
-                                            <input type="text" class="form-control text-center" value="1" data-rule="quantity">
+                                            <input type="text" class="form-control text-center" value="1" data-rule="quantity" name="no_docs">
                                         </div>
                                         <span class="input-group-addon">
                                             <a href="javascript:;" class="spin-up" data-spin="up"><i class="glyphicon glyphicon-chevron-up"></i></a>
@@ -91,7 +91,7 @@
                                     <div class="body">
                                         <div class="row clearfix">
                                             <div class="col-sm-6">
-                                                <select id='A' name='A'>
+                                                <select id='A' name='department'>
                                                     <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
                                                     {% for i in range(1,dept|length) %}
                                                     <option value="{{ dept[i] }}">{{ dept[i] }}</option>
@@ -99,7 +99,7 @@
                                                 </select>
                                                 </div>
                                             <div class="col-sm-6">
-                                                <select id='B' name='B'></select>
+                                                <select id='B' name='to'></select>
                                             </div>
                                         </div>
                                     </div>
