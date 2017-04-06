@@ -128,19 +128,15 @@ def new_doc():
 			print (org)
 			print (no_docs)
 			print(reciever)
-				# TODO : queries by hemang and maneesh
 
-				# c.execute("INSERT INTO Document_details (subject, number_of_documents, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
-
-				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
-
-				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
+			c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
+			data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
+			data = c.fetchone()
+			doc_id1=data[0]
+			c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
+			c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
+			c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
+			conn.commit()
 			print("Thanks for uploading!")
 			c.close()
 			conn.close()
