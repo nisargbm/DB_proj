@@ -7,38 +7,56 @@
 
            <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
                     <div class="card">
- <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                    <div class="header">
+                        <h2>
+                        PENDING FILES
+                        </h2>
+                    </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped dataTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
-                                <th>email</th>
-                                <th>dept</th>
-                                <th>name</th>
+                                <th style="width:25px">ID</th>
+                                <th style="width:25px">Pass</th>
+                                <th style="width:25px">email</th>
+                                <th style="width:25px"">dept</th>
                             </tr>
                         </thead>
-                        <tfoot>
-                            <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
-                                <th>email</th>
-                                <th>dept</th>
-                                <th>name</th>
-                            </tr>
-                        </tfoot>
                         <tbody>
-                            {% for user in data %}
-                            <tr>
-                                <td>{{ user[0] }}</td>
-                                <td>{{ user[1] }}</td>
-                                <td>{{ user[2] }}</td>
-                                <td>{{ user[3] }}</td>
-                                <td>{{ user[4] }}</td>
+                            <tr >
+                                <td>abcdhsef</td>
+                                <td>efsre.i</td>
+                                <td>gijubhk</td>
+                                <td>hjikusd</td>
                             </tr>
-                            {% endfor %}
+                           
                         </tbody>
                     </table>
+ 
+                    </div>
+                </div>
+
+
+
+                    <div class="card">
+                         <div class="header">
+                            <h2>From</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea disabled rows="1" class="form-control no-resize" name="user_id">{{ session.userid }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="header">
                             <h2>Comments</h2>
                             
@@ -85,6 +103,14 @@
                                         <option value="40">40</option>
                                         <option value="50">50</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <h2 class="card-inside-title">Status</h2>
+                            <div class="demo-switch">
+                                <div class="switch">
+                                    <label>Rejected<input type="checkbox" ><span class="lever"></span>Accepted</label>
                                 </div>
                             </div>
                         </div>

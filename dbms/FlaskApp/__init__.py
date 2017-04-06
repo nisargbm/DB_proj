@@ -93,7 +93,7 @@ def existing_doc(variable):
 @login_required
 def my_docs():
 	c, conn = connection()
-	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = 'om' AND status= 'CREATED' ORDER BY movement_date DESC;")
+	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = (%s) AND status= 'CREATED' ORDER BY movement_date DESC;",[thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
