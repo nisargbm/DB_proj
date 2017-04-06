@@ -1,0 +1,58 @@
+﻿{% extends "dashboard.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+            </div>
+            <!-- Basic Validation -->
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>My Docs</h2>
+                        </div>
+                        <div class="body">
+                            {% if data!=null %}
+                            <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>DOC ID</th>
+                                        <th>Subject</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>DOC ID</th>
+                                        <th>Subject</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr onclick="window.document.location='/existing_doc/';">
+                                        <td>1221212</td>
+                                        <td>Notice</td>
+                                        <td>Details</td>
+                                    </tr>
+                                    {% for user in data %}
+                                    <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
+                                        <td>{{ user[0] }}</td>
+                                        <td>{{ user[1] }}</td>
+                                        <td>{{ user[2] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                                <div class="well">NO DATA</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #END# Basic Validation -->
+        </div>
+    </section>
+{% endblock %}

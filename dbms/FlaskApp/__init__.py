@@ -89,14 +89,33 @@ def existing_doc(variable):
     gc.collect()
     return render_template("existing_doc.html", data = data)
 
+@app.route('/my_docs/')
+@login_required
+def my_docs():
+	c, conn = connection()
+	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = 'om' AND status= 'CREATED' ORDER BY movement_date DESC;")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("my_docs.html", data = data)
 
-
-class InwardNewForm(Form):
+class InwardExistingForm(Form):
 	userid = TextField('user_id')
 	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
-	doc_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
+	doc_details = TextField('document_details')
 	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
 	no_docs = TextField('no_documents')
+	to = TextField('forward_person')
+	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
+
+class InwardNewForm(Form):
+	user_id = TextField('user_id')
+	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
+	document_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
+	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
+	no_docs = TextField('no_docs')
 	to = TextField('forward_person')
 	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
 
@@ -107,32 +126,29 @@ def new_doc():
 		c, conn = connection()
 		form = InwardNewForm(request.form)		
 		if request.method == "POST" :
-			sender  = form.userid.data
+			sender  = session['userid'];
 			subject = form.subject.data
-			doc_details = form.doc_details.data
+			doc_details = form.document_details.data
 			org = form.organization.data
 			no_docs = form.no_docs.data
 			reciever = form.to.data
 			# place = form.place.data
+			print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
 			print (sender)
 			print (subject)
 			print (doc_details)
 			print (org)
 			print (no_docs)
 			print(reciever)
-				# TODO : queries by hemang and maneesh
 
-				# c.execute("INSERT INTO Document_details (subject, number_of_documents, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
-
-				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
-
-				# c.execute("INSERT INTO Document(reciever,sender, organisation, details) VALUES (%s,%s,%s,%s)",
-				# 	[ thwart(subject), thwart(no_docs), thwart(org), thwart(doc_details)])
-				# conn.commit()
+			c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
+			data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
+			data = c.fetchone()
+			doc_id1=data[0]
+			c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
+			c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
+			c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
+			conn.commit()
 			print("Thanks for uploading!")
 			c.close()
 			conn.close()
@@ -367,29 +383,26 @@ def login_page():
             password = data[1]
             email = data[2]
             userid = data[0]
+            print email,userid,password
+            print request.form['username'].upper(),request.form['password']
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
                 session['userid'] = request.form['username'].upper()
                 session['email'] = email
-                print (session['username'])
+                #print (session['username'])
                 print ("You are now logged in")
                 return redirect(url_for("home"))
-
             else:
                 error = "Invalid credentials, try again."
                 print (error)
         c.close()
         conn.close()
         gc.collect()
-
         return render_template("sign-in.html", error=error)
-    
-        
     except Exception as e:
-        #flash(e)
         error = "Invalid credentials, try again."
-        print (error)
+        print (error,e)
         return render_template("sign-in.html", error = error)
 
 
@@ -398,9 +411,8 @@ def login_page():
 @login_required
 def logout():
     session.clear()
-    #flash("You have been logged out!")
     gc.collect()
-    return redirect(url_for('upload'))
+    return redirect(url_for('home'))
 
 if __name__ =="__main__":
 	app.debug = True
