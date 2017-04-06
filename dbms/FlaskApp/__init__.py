@@ -201,7 +201,7 @@ def received_individual():
             status  = request.form.get("status")
             print person
             print status
-            c.execute("SELECT doc_id, subject, details FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN ( SELECT doc_id FROM Process WHERE status = (%s));",[thwart(person), thwart(session['userid']), thwart(status)])
+            c.execute("SELECT doc_id, subject, details, sender FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status = (%s));",[thwart(person), thwart(session['userid']), thwart(status)])
             conn.commit()
             table = c.fetchall()
             print ("table")
@@ -222,7 +222,7 @@ def received_department():
             print("Getting data from form")
             dept  = request.form.get("dept")
             status  = request.form.get("status")
-            c.execute("")
+            c.execute("SELECT doc_id, subject,details, sender FROM Document NATURAL JOIN Document_details WHERE receiver = (%s) AND doc_id IN ( SELECT doc_id FROM Process WHERE status= (%s) ) AND sender IN ( SELECT user_id FROM User WHERE department = (%s) );", [thwart(session['userid']), thwart(status), thwart(dept)])
             conn.commit()
             table = c.fetchall()
             print ("table")
