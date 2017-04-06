@@ -172,39 +172,139 @@ def database():
 
 @app.route('/history/received')
 def history_recieved():
-	c, conn = connection()
-	###############QUERY FOR Received HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Received History")
+    history_cat = "received"
+    return render_template("history.html", history_cat = history_cat)
+
+@app.route('/history/received/individual/')
+def received_individual():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("individual.html", data = data)
+
+@app.route('/history/received/department/')
+def received_department():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("department.html", data = data)
+
+@app.route('/history/received/overall/')
+def received_overall():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("overall.html", data = data)
 
 @app.route('/history/sent')
 def history_sent():
-	c, conn = connection()
-	###############QUERY FOR Sent HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Sent History")
+    history_cat = "sent"
+    return render_template("history.html", history_cat = history_cat)
+
+@app.route('/history/sent/individual/')
+def sent_individual():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("individual.html", data = data)
+
+@app.route('/history/sent/department/')
+def sent_department():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("department.html", data = data)
+
+@app.route('/history/sent/overall/')
+def sent_overall():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("overall.html", data = data)
 
 @app.route('/history/')
 def history_page():
-	c, conn = connection()
+    history_cat = "overall"
+    c, conn = connection()
 	###############QUERY FOR OVERALL HISTORY
-	c.execute("SELECT * FROM User")
-	conn.commit()
-	data = c.fetchall()
-	c.close()
-	conn.close()
-	gc.collect()
-	return render_template("history.html", data = data, text = "Overall History")
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("history.html", data = data, history_cat = history_cat, text = "Overall History")
+
+@app.route('/history/overall')
+def history_overall():
+    history_cat = "overall"
+    return render_template("history.html", history_cat = history_cat)
+
+@app.route('/history/overall/individual/')
+def overall_individual():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("individual.html", data = data)
+
+@app.route('/history/overall/department/')
+def overall_department():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("department.html", data = data)
+
+@app.route('/history/overall/overall/')
+def overall_overall():
+    c, conn = connection()
+	###############QUERY FOR received HISTORY
+    c.execute("SELECT * FROM User")
+    conn.commit()
+    data = c.fetchall()
+    c.close()
+    conn.close()
+    gc.collect()
+    return render_template("overall.html", data = data)
 
 @app.errorhandler(404)
 def page_not_found(e):
