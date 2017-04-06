@@ -89,12 +89,23 @@ def existing_doc(variable):
     gc.collect()
     return render_template("existing_doc.html", data = data)
 
+@app.route('/my_docs/')
+@login_required
+def my_docs():
+	c, conn = connection()
+	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = 'om' AND status= 'CREATED' ORDER BY movement_date DESC;")
+	conn.commit()
+	data = c.fetchall()
+	c.close()
+	conn.close()
+	gc.collect()
+	return render_template("my_docs.html", data = data)
 
 
 class InwardNewForm(Form):
 	userid = TextField('user_id')
 	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
-	doc_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
+	doc_details = TextField('document_details')
 	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
 	no_docs = TextField('no_documents')
 	to = TextField('forward_person')
@@ -275,19 +286,14 @@ def login_page():
                 print (session['username'])
                 print ("You are now logged in")
                 return redirect(url_for("home"))
-
             else:
                 error = "Invalid credentials, try again."
                 print (error)
         c.close()
         conn.close()
         gc.collect()
-
         return render_template("sign-in.html", error=error)
-    
-        
     except Exception as e:
-        #flash(e)
         error = "Invalid credentials, try again."
         print (error)
         return render_template("sign-in.html", error = error)
@@ -298,9 +304,8 @@ def login_page():
 @login_required
 def logout():
     session.clear()
-    #flash("You have been logged out!")
     gc.collect()
-    return redirect(url_for('upload'))
+    return redirect(url_for('home'))
 
 if __name__ =="__main__":
 	app.debug = True
