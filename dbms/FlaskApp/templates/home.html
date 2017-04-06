@@ -15,27 +15,24 @@
                     <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
-                                <th>email</th>
-                                <th>dept</th>
+                                <th>Doc ID</th>
+                                <th>Subject</th>
+                                <th>Details</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
-                                <th>email</th>
-                                <th>dept</th>
+                                <th>DOC ID</th>
+                                <th>Subject</th>
+                                <th>Details</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             {% for user in data %}
                             <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
                                 <td>{{ user[0] }}</td>
-                                <td>{{ user[1].count("aa") }}</td>
+                                <td>{{ user[1] }}</td>
                                 <td>{{ user[2] }}</td>
-                                <td>{{ user[3] }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

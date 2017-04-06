@@ -55,7 +55,7 @@ def photos_page():
 def home():
 	c, conn = connection()
 	#QUERY For Pending Documents
-	c.execute("SELECT * FROM User")
+	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
