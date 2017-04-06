@@ -145,7 +145,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="/upload/">
+                        <a href="/my_docs/">
                             <i class="material-icons">content_paste</i>
                             <span>My Documents</span>
                         </a>
@@ -207,12 +207,23 @@
     <script type="text/javascript" src="{{ url_for('static', filename='plugins/node-waves/waves.js') }}"></script>
     <!-- Jquery Spinner Plugin Js -->
     <script src="{{ url_for('static', filename='plugins/jquery-spinner/js/jquery.spinner.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-datatable/jquery.dataTables.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/pages/tables/jquery-datatable.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js') }}"></script>
+
+
     <!-- Custom Js -->
     <!-- <script src="js/admin.js"></script> -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/admin.js') }}"></script>
     <!-- Demo Js -->
     <!-- <script src="js/demo.js"></script> -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/demo.js') }}"></script>
+
 </body>
 
 </html>
