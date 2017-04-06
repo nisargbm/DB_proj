@@ -191,35 +191,54 @@ def history_recieved():
     history_cat = "received"
     return render_template("history.html", history_cat = history_cat)
 
-@app.route('/history/received/individual/')
+@app.route('/history/received/individual/', methods=["GET","POST"])
 def received_individual():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            person  = request.form.get("user_id")
+            status  = request.form.get("status")
+            print person
+            print status
+            c.execute("SELECT doc_id, subject, details FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN ( SELECT doc_id FROM Process WHERE status = (%s));",[thwart(person), thwart(session['userid']), thwart(status)])
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
     c.execute("SELECT * FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("individual.html", data = data)
+    return render_template("individual.html", data = data, table = table)
 
-@app.route('/history/received/department/')
+@app.route('/history/received/department/', methods=["GET","POST"])
 def received_department():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            dept  = request.form.get("dept")
+            status  = request.form.get("status")
+            c.execute("")
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
+    c.execute("SELECT DISTINCT department FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("department.html", data = data)
+    return render_template("department.html", data = data, table = table)
 
-@app.route('/history/received/overall/')
+@app.route('/history/received/overall/', methods=["GET","POST"])
 def received_overall():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    c.execute("")
     conn.commit()
     data = c.fetchall()
     c.close()
@@ -232,7 +251,7 @@ def history_sent():
     history_cat = "sent"
     return render_template("history.html", history_cat = history_cat)
 
-@app.route('/history/sent/individual/')
+@app.route('/history/sent/individual/', methods=["GET","POST"])
 def sent_individual():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
@@ -244,7 +263,7 @@ def sent_individual():
     gc.collect()
     return render_template("individual.html", data = data)
 
-@app.route('/history/sent/department/')
+@app.route('/history/sent/department/', methods=["GET","POST"])
 def sent_department():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
@@ -256,7 +275,7 @@ def sent_department():
     gc.collect()
     return render_template("department.html", data = data)
 
-@app.route('/history/sent/overall/')
+@app.route('/history/sent/overall/', methods=["GET","POST"])
 def sent_overall():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
@@ -286,7 +305,7 @@ def history_overall():
     history_cat = "overall"
     return render_template("history.html", history_cat = history_cat)
 
-@app.route('/history/overall/individual/')
+@app.route('/history/overall/individual/', methods=["GET","POST"])
 def overall_individual():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
@@ -298,7 +317,7 @@ def overall_individual():
     gc.collect()
     return render_template("individual.html", data = data)
 
-@app.route('/history/overall/department/')
+@app.route('/history/overall/department/', methods=["GET","POST"])
 def overall_department():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
@@ -310,7 +329,7 @@ def overall_department():
     gc.collect()
     return render_template("department.html", data = data)
 
-@app.route('/history/overall/overall/')
+@app.route('/history/overall/overall/', methods=["GET","POST"])
 def overall_overall():
     c, conn = connection()
 	###############QUERY FOR received HISTORY
