@@ -1,0 +1,64 @@
+
+
+
+{% extends "dashboard.html" %}
+{% block title %}Home{% endblock %}
+{% block body %}
+
+    <section class="content">
+        <div class="container-fluid">
+            
+<div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                             
+                                    Overall
+                                
+                            </h2>
+                            
+                        </div>
+                        {% if data!=null %}
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pass</th>
+                                <th>email</th>
+                                <th>dept</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pass</th>
+                                <th>email</th>
+                                <th>dept</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in data %}
+                            <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1].count("aa") }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td>{{ user[3] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+    {% else %}
+        <div class="well">NO DATA</div>
+    {% endif %}
+                        </table>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </section>
+
+{% endblock %}
