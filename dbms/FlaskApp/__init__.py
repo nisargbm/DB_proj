@@ -89,14 +89,21 @@ def existing_doc(variable):
     gc.collect()
     return render_template("existing_doc.html", data = data)
 
-
-
-class InwardNewForm(Form):
+class InwardExistingForm(Form):
 	userid = TextField('user_id')
 	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
 	doc_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
 	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
 	no_docs = TextField('no_documents')
+	to = TextField('forward_person')
+	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
+
+class InwardNewForm(Form):
+	user_id = TextField('user_id')
+	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
+	document_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
+	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
+	no_docs = TextField('no_docs')
 	to = TextField('forward_person')
 	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
 
@@ -107,13 +114,14 @@ def new_doc():
 		c, conn = connection()
 		form = InwardNewForm(request.form)		
 		if request.method == "POST" :
-			sender  = form.userid.data
+			sender  = session['userid'];
 			subject = form.subject.data
-			doc_details = form.doc_details.data
+			doc_details = form.document_details.data
 			org = form.organization.data
 			no_docs = form.no_docs.data
 			reciever = form.to.data
 			# place = form.place.data
+			print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
 			print (sender)
 			print (subject)
 			print (doc_details)
@@ -267,12 +275,14 @@ def login_page():
             password = data[1]
             email = data[2]
             userid = data[0]
+            print email,userid,password
+            print request.form['username'].upper(),request.form['password']
 
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
                 session['userid'] = request.form['username'].upper()
                 session['email'] = email
-                print (session['username'])
+                #print (session['username'])
                 print ("You are now logged in")
                 return redirect(url_for("home"))
 
@@ -288,8 +298,8 @@ def login_page():
         
     except Exception as e:
         #flash(e)
-        error = "Invalid credentials, try again."
-        print (error)
+        error = "Invalid credentials"
+        print (error , e)
         return render_template("sign-in.html", error = error)
 
 
