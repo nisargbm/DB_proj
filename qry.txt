@@ -667,38 +667,48 @@ VALUES("nisarg",2,"REJECTED","reasons");
 ******************************************************************************************************************************************************
 
 UPLOAD QUERIES
-NEW BUTTON -PRESSED
-DELIMITER //
-CREATE PROCEDURE totalcount()
- BEGIN
 
-INSERT INTO Process(user_id,doc_id,movement_date)
-VALUES("curr_id","doc_id", date);
+1.NEW BUTTON -PRESSED
+
+DELIMITER //
+CREATE PROCEDURE new_doc()
+BEGIN
+
+DECLARE docid INT 
+
 INSERT INTO Document_details(subject,no_of_documents,details,organisation)
 VALUES("subject","no.of documents","details","organisation")
-INSERT INTO Document(sender,receiver)
-VALUES("cur_id","to_id")
 
+SELECT doc_id FROM Document_details INTO docid
+WHERE subject= sub AND number_of_documents = num AND details = det AND organisation = org
 
+INSERT INTO Process(user_id,doc_id,status)
+VALUES("cur_id",docid,"CREATED");
+
+INSERT INTO Process(user_id,doc_id)
+VALUES("to_id",docid);
+
+INSERT INTO Document(doc_id,sender,receiver)
+VALUES(docid,"cur_id","to_id")
 
 END //
 DELIMITER ;
 
+2.EXISTING DOC
+
 DELIMITER //
-CREATE PROCEDURE totalcount()
- BEGIN
+CREATE PROCEDURE new_doc()
+BEGIN
 
-INSERT INTO Process(user_id,doc_id,movement_date)
-VALUES("curr_id","doc_id", date);
-INSERT INTO Document_details(subject,no_of_documents,details,organisation)
-VALUES("subject","no.of documents","details","organisation")
-INSERT INTO Document(sender,receiver)
-VALUES("cur_id","to_id")
+INSERT INTO Process(user_id,doc_id)
+VALUES("to_id",doc_id);
 
-
+INSERT INTO Document(doc_id,sender,receiver)
+VALUES(doc_id,"cur_id","to_id")
 
 END //
 DELIMITER ;
+
 
 INWARD QUERIES
 
