@@ -6,8 +6,9 @@
         <div class="container-fluid">
 
            <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                
                     <div class="card">
                     <div class="header">
                         <h2>
@@ -44,6 +45,7 @@
 
 
                     <div class="card">
+                        <form action="/existing_doc/{{ data1[0][1] }}" id="existing_doc" method="POST">
                          <div class="header">
                             <h2>From</h2>
                         </div>
@@ -111,10 +113,13 @@
                     </div>
                 </div>
             </div>
-                           <button type="button" class="btn btn-primary m-t-15 waves-effect">Upload</button>
+                           <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
                         </div>
+                        </form>
                     </div>
+                    
                 </div>
+                
             </div>
         </div>
     </section>

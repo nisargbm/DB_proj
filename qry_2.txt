@@ -698,6 +698,8 @@ VALUES("to_id",doc_id);
 INSERT INTO Document(doc_id,sender,receiver)
 VALUES(doc_id,"cur_id","to_id")
 
+UPDATE PROCESS SET status = "VAR" AND comment = "var" WHERE doc_id = var AND user_id = session.id
+
 END //
 DELIMITER ;
 

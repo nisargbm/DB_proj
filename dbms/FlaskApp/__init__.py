@@ -94,23 +94,23 @@ class InwardExistingForm(Form):
 	userid = TextField('user_id')
 	comments = TextField('comment')
 	to = TextField('forward_person')
-    #status=request.form.get('status')
+	#status=TextField('status')
 	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 	
 
-@app.route('/existing_doc/<variable>')
+@app.route('/existing_doc/<variable>', methods=["GET","POST"])
 @login_required
 def existing_doc(variable):
 	try:
 		c, conn = connection()
-		form = InwardNewForm(request.form)		
+		form = InwardExistingForm(request.form)		
 		if request.method == "POST" :
-			# sender  = session['userid'];
-			# subject = form.subject.data
-			# doc_details = form.document_details.data
-			# org = form.organization.data
-			# no_docs = form.no_docs.data
-			# reciever = form.to.data
-			# # place = form.place.data
+			sender  = session['userid']
+			reciever = form.to.data
+			comment = form.comment.data
+			print form.to.data
+			#print form.status.data
+			#status = form.status.data
+			# place = form.place.data
 			# print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
 			# print (sender)
 			# print (subject)
@@ -136,7 +136,7 @@ def existing_doc(variable):
 			c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
 			conn.commit()
 			data1 = c.fetchall()
-			print data1
+			#print data1
 			c.execute("SELECT DISTINCT department FROM User")
 			conn.commit()
 			data = c.fetchall()
