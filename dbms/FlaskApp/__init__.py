@@ -34,6 +34,9 @@ class RegistrationForm(Form):
     confirm = PasswordField('Repeat Password')
     accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice', [validators.Required()])
 
+
+
+
 @app.route('/')
 def homepage():
 	if(session.get('logged_in')):
@@ -55,7 +58,7 @@ def photos_page():
 def home():
 	c, conn = connection()
 	#QUERY For Pending Documents
-	c.execute("SELECT doc_id,subject,details FROM Process NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
+	c.execute("SELECT doc_id,subject,details,sender FROM Process NATURAL JOIN Document_details NATURAL JOIN Document WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
@@ -77,17 +80,80 @@ def upload():
 	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
+class InwardExistingForm(Form):
+	userid = TextField('user_id')
+	comments = TextField('comment')
+	to = TextField('forward_person')
+    #status=request.form.get('status')
+	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 	
+
 @app.route('/existing_doc/<variable>')
 @login_required
 def existing_doc(variable):
-    c, conn = connection()
-    c.execute("SELECT * FROM User WHERE user_id = (%s)", [thwart(variable)])
-    #conn.commit()
-    data = c.fetchall()
-    c.close()
-    conn.close()
-    gc.collect()
-    return render_template("existing_doc.html", data = data)
+	try:
+		c, conn = connection()
+		form = InwardNewForm(request.form)		
+		if request.method == "POST" :
+			# sender  = session['userid'];
+			# subject = form.subject.data
+			# doc_details = form.document_details.data
+			# org = form.organization.data
+			# no_docs = form.no_docs.data
+			# reciever = form.to.data
+			# # place = form.place.data
+			# print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
+			# print (sender)
+			# print (subject)
+			# print (doc_details)
+			# print (org)
+			# print (no_docs)
+			# print(reciever)
+
+			# c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
+			# data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
+			# data = c.fetchone()
+			# doc_id1=data[0]
+			# c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
+			# c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
+			# c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
+			# conn.commit()
+			# print("Thanks for uploading!")
+			# c.close()
+			# conn.close()
+			# gc.collect()
+			return redirect(url_for('home'))
+		else:
+			c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
+			conn.commit()
+			data1 = c.fetchall()
+			print data1
+			c.execute("SELECT DISTINCT department FROM User")
+			conn.commit()
+			data = c.fetchall()
+			dept = []
+			for u in data:
+				dept.append(u[0])
+			users = []
+			for d in dept:
+				c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
+				conn.commit()
+				data = c.fetchall()
+				names = []
+				for u in data:
+					names.append(u[0])
+				users.append(names)
+			return render_template("existing_doc.html",form=form, users = users, dept = dept,data1 = data1)
+	except Exception as e:
+		print (str(e))
+		return(str(e))
+    # c, conn = connection()
+    # c.execute("SELECT * FROM User WHERE user_id = (%s)", [thwart(variable)])
+    # #conn.commit()
+    # data = c.fetchall()
+    # c.close()
+    # conn.close()
+    # gc.collect()
+    # return render_template("existing_doc.html", data = data)
 
 @app.route('/my_docs/')
 @login_required
@@ -101,14 +167,6 @@ def my_docs():
 	gc.collect()
 	return render_template("my_docs.html", data = data)
 
-class InwardExistingForm(Form):
-	userid = TextField('user_id')
-	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
-	doc_details = TextField('document_details')
-	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
-	no_docs = TextField('no_documents')
-	to = TextField('forward_person')
-	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
 
 class InwardNewForm(Form):
 	user_id = TextField('user_id')

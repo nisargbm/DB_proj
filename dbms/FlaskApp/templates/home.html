@@ -18,6 +18,7 @@
                                 <th>Doc ID</th>
                                 <th>Subject</th>
                                 <th>Details</th>
+                                <th>Sender</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -25,14 +26,16 @@
                                 <th>DOC ID</th>
                                 <th>Subject</th>
                                 <th>Details</th>
+                                <th>Sender</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            {% for user in data %}
-                            <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
-                                <td>{{ user[0] }}</td>
-                                <td>{{ user[1] }}</td>
-                                <td>{{ user[2] }}</td>
+                            {% for doc in data %}
+                            <tr onclick="window.document.location='/existing_doc/{{ doc[0] }}';">
+                                <td >{{ doc[0] }}</td>
+                                <td>{{ doc[1] }}</td>
+                                <td>{{ doc[2] }}</td>
+                                <td>{{ doc[3] }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
