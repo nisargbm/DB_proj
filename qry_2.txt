@@ -1,7 +1,6 @@
 1.Hiearchy
 
-SELECT sender,receiver,Date_of_receipt FROM Document 
-WHERE doc_id = 2
+SELECT sender,receiver,Date_of_receipt FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = input AND sender = myid AND user_id = receiver
 ORDER BY Date_of_receipt
 
 2. Current

@@ -41,6 +41,19 @@ def homepage():
 			return redirect(url_for('home'))
 	return render_template("homepage.html")
 
+@app.route('/track/<variable>')
+@login_required
+def track_doc(variable):
+	try:
+		c, conn = connection()
+		# Query pending because "HEMANG" has not writtern it and waants me to do something useful!
+		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND sender = (%s) AND user_id = receiver ORDER BY date_of_receipt DESC",[thwart(variable),thwart(session['userid'])])
+		conn.commit()
+		data = c.fetchall()
+		return render_template("doc_track.html", data = data)
+	except Exception as e:
+		print (str(e))
+		return(str(e))
 
 @app.route('/forgot-password/')
 def forgot_pass_page():
@@ -72,9 +85,6 @@ def outward():
 @app.route('/upload/')
 @login_required
 def upload():
-	flash("flash test!!!!")
-	# flash("fladfasdfsaassh test!!!!")
-	# flash("asdfas asfsafs!!!!")
 	return render_template("upload.html")
 
 @app.route('/existing_doc/<variable>')

@@ -1,0 +1,52 @@
+{% extends "dashboard.html" %} {% block title %}Track{% endblock %} {% block body %}
+<section class="content">
+    <div class="row clearfix">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="header">
+                    <h2>
+                    	Document History    
+                    </h2>
+                </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>Doc ID</th>
+                                <th>Sender</th>
+                                <th>Receiver</th>
+                                <th>Subject</th>
+                                <th>Details</th>
+                                <th>Date of Receipt</th>
+                                <th>Status</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Doc ID</th>
+                                <th>Sender</th>
+                                <th>Receiver</th>
+                                <th>Subject</th>
+                                <th>Details</th>
+                                <th>Date of Receipt</th>
+                                <th>Status</th>
+                                <th>Comment</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in data %}
+                            <tr onclick="window.document.location='/existing_doc/{{ user[0] }}';">
+                                {% for item in user %}
+                                <td>{{ item }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
