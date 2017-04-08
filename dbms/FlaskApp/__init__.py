@@ -7,8 +7,6 @@ from functools import wraps
 import gc
 
 
-
-
 app = Flask(__name__)
 app.secret_key = "sdkjgly"
 
@@ -25,18 +23,25 @@ def login_required(f):
     return wrap
 
 @app.route('/')
+def index():
+	if(session.get('logged_in')):
+		if(session['logged_in']):
+			return redirect(url_for('home'))
+	return redirect(url_for('homepage'))
+	
+@app.route('/homepage')
 def homepage():
 	if(session.get('logged_in')):
 		if(session['logged_in']):
 			return redirect(url_for('home'))
 	return render_template("homepage.html")
 
+
 @app.route('/track/<variable>')
 @login_required
 def track_doc(variable):
 	try:
 		c, conn = connection()
-		# Query pending because "HEMANG" has not writtern it and waants me to do something useful!
 		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND sender = (%s) AND user_id = receiver ORDER BY date_of_receipt DESC",[thwart(variable),thwart(session['userid'])])
 		conn.commit()
 		data = c.fetchall()
@@ -57,7 +62,6 @@ def photos_page():
 @login_required
 def home():
 	c, conn = connection()
-	#QUERY For Pending Documents
 	c.execute("SELECT doc_id,subject,details,sender FROM Process NATURAL JOIN Document_details NATURAL JOIN Document WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
@@ -69,21 +73,13 @@ def home():
 @app.route('/outward/')	
 @login_required
 def outward():
-	#c,conn =connection()
 	return render_template("outward_form.html")
 
 @app.route('/upload/')
 @login_required
 def upload():
 	return render_template("upload.html")
-
-class InwardExistingForm(Form):
-	userid = TextField('user_id')
-	comments = TextField('comment')
-	to = TextField('forward_person')
-    #status=request.form.get('status')
-	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 	
-
+	
 @app.route('/existing_doc/<variable>', methods=["GET","POST"])
 @login_required
 def existing_doc(variable):
@@ -91,8 +87,7 @@ def existing_doc(variable):
 		c, conn = connection()
 		c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
 		conn.commit()
-		doc_details = c.fetchone()
-		# form = InwardExistingForm(request.form)		
+		doc_details = c.fetchone()	
 		if request.method == "POST" :
 			sender  = session['userid'];
 			comments = request.form.get('comment')
@@ -508,7 +503,7 @@ def login_page():
 def logout():
     session.clear()
     gc.collect()
-    return redirect(url_for('home'))
+    return redirect(url_for('homepage'))
 
 if __name__ =="__main__":
 	app.debug = True
