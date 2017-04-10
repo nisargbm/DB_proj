@@ -1,38 +1,75 @@
 ﻿{% extends "dashboard.html" %}
 {% block title %}Home{% endblock %}
 {% block body %}
-
+{% if status == "logged_in" %}
     <section class="content">
       <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>
-                        OUTWARD FILES
+                        User
                     </h2>
                 </div>
                 <div class="body">
                     <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
+                                <th>Username</th>
+                                <th>Password</th>
                                 <th>email</th>
                                 <th>dept</th>
-                                <th>name</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>ID</th>
-                                <th>Pass</th>
+                                <th>Username</th>
+                                <th>Password</th>
                                 <th>email</th>
                                 <th>dept</th>
-                                <th>name</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            {% for user in data %}
+                            {% for user in User %}
+                            <tr>
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1] }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td>{{ user[3] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Process
+                    </h2>
+                </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>movement_date</th>
+                                <th>comment</th>
+                                <th>user_id</th>
+                                <th>doc_id</th>
+                                <th>status</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>movement_date</th>
+                                <th>comment</th>
+                                <th>user_id</th>
+                                <th>doc_id</th>
+                                <th>status</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in Process %}
                             <tr>
                                 <td>{{ user[0] }}</td>
                                 <td>{{ user[1] }}</td>
@@ -45,22 +82,103 @@
                     </table>
                 </div>
             </div>
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Document
+                    </h2>
+                </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>sr no</th>
+                                <th>doc_id</th>
+                                <th>date_of_receipt</th>
+                                <th>sender</th>
+                                <th>receiver</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>sr no</th>
+                                <th>doc_id</th>
+                                <th>date_of_receipt</th>
+                                <th>sender</th>
+                                <th>receiver</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in Document %}
+                            <tr>
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1] }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td>{{ user[3] }}</td>
+                                <td>{{ user[4] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="header">
+                    <h2>
+                        Document_details
+                    </h2>
+                </div>
+                <div class="body">
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                <th>doc_id</th>
+                                <th>Subject</th>
+                                <th>No. of Doc</th>
+                                <th>organisation</th>
+                                <th>details</th>
+                                <th>move_date</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>doc_id</th>
+                                <th>Subject</th>
+                                <th>No. of Doc</th>
+                                <th>organisation</th>
+                                <th>details</th>
+                                <th>move_date</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in Document_details %}
+                            <tr>
+                                <td>{{ user[0] }}</td>
+                                <td>{{ user[1] }}</td>
+                                <td>{{ user[2] }}</td>
+                                <td>{{ user[3] }}</td>
+                                <td>{{ user[4] }}</td>
+                                <td>{{ user[5] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
       </div>
     </section>
-
-    <!-- Custom Js -->
-    <script src="{{ url_for('static', filename='js/pages/tables/jquery-datatable.js') }}"></script>
-    <!-- Jquery DataTable Plugin Js -->
-    <script src="{{ url_for('static', filename='plugins/jquery-datatable/jquery.dataTables.js') }}"></script>
-    <script src="{{ url_for('static', filename='plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js') }}"></script>
-    <script src="{{ url_for('static', filename='plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js') }}"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/buttons.flash.min.js"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/jszip.min.js"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/pdfmake.min.js"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
-    <script src="../../plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script>
-
-
+{% else %}
+<section class="content">
+    <form action="" method="POST">
+        <div class="col-md-6">
+            <label for="password">Enter Admin Password:</label>
+            <div class="form-line">
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
+        </div>
+    </form>
+</section>
+{% endif %}
 {% endblock %}

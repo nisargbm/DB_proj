@@ -8,7 +8,7 @@
 
     <link rel="icon" href="{{ url_for('static', filename='icon.ico') }}" type="image/x-icon">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css"> -->
     
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.css') }}">
     
@@ -166,7 +166,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; 2017 <a href="javascript:void(0);">Document_Tracking</a>.
+                    &copy; 2017 <a href="{{ url_for('database') }}">Document_Tracking</a>.
                 </div>
             </div>
             <!-- #Footer -->

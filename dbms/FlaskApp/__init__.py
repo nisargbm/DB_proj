@@ -217,16 +217,29 @@ def new_doc():
 		print (str(e))
 		return(str(e))
 
-@app.route('/database/')
+@app.route('/database/', methods=["GET","POST"])
 def database():
-    c, conn = connection()
-    c.execute("SELECT * FROM User")
-    conn.commit()
-    data = c.fetchall()
-    c.close()
-    conn.close()
-    gc.collect()
-    return render_template("database.html", data = data)
+	if request.method == "POST":
+		print ("Hello",request.form.get("password"))
+		if request.form.get("password") == "12345":
+			c, conn = connection()
+			c.execute("SELECT * FROM User")
+			conn.commit()
+			User = c.fetchall()
+			c.execute("SELECT * FROM Process")
+			conn.commit()
+			Process = c.fetchall()
+			c.execute("SELECT * FROM Document")
+			conn.commit()
+			Document = c.fetchall()
+			c.execute("SELECT * FROM Document_details")
+			conn.commit()
+			Document_details = c.fetchall()
+			c.close()
+			conn.close()
+			gc.collect()
+			return render_template("database.html", status="logged_in",User = User, Process = Process, Document = Document, Document_details = Document_details)
+	return render_template("database.html", status="login" )
 
 @app.route('/history/received')
 def history_recieved():
@@ -416,10 +429,10 @@ def my_stats():
 	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'REJECTED')",[thwart(session['userid'])])
 	conn.commit()
 	rejected_count = c.fetchone()[0]
-	print pending_count,rejected_count,accepted_count
-	print type(pending_count)
+	print (pending_count,rejected_count,accepted_count)
+	print (type(pending_count))
 	info = [int(pending_count) , int(accepted_count) , int(rejected_count)]
-	print info
+	print (info)
 	return render_template("stats.html", status = status ,info = info)
 
 @app.route('/statistics/overall')
@@ -436,10 +449,10 @@ def overall_stats():
 	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'REJECTED')",[thwart(session['userid'])])
 	conn.commit()
 	rejected_count = c.fetchone()[0]
-	print pending_count,rejected_count,accepted_count
-	print type(pending_count)
+	print (pending_count,rejected_count,accepted_count)
+	print (type(pending_count))
 	info = [int(pending_count) , int(accepted_count) , int(rejected_count)]
-	print info
+	print (info)
 	return render_template("stats.html", status = status)
 
 @app.errorhandler(404)
