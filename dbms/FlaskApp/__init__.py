@@ -399,12 +399,40 @@ def overall_overall():
 @login_required
 def my_stats():
 	status="Personal"
-	return render_template("stats.html", status = status)
+	c,conn = connection()
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'PENDING')",[thwart(session['userid'])])
+	conn.commit()
+	pending_count = c.fetchone()[0]
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'ACCEPTED')",[thwart(session['userid'])])
+	conn.commit()
+	accepted_count = c.fetchone()[0]
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'REJECTED')",[thwart(session['userid'])])
+	conn.commit()
+	rejected_count = c.fetchone()[0]
+	print pending_count,rejected_count,accepted_count
+	print type(pending_count)
+	info = [int(pending_count) , int(accepted_count) , int(rejected_count)]
+	print info
+	return render_template("stats.html", status = status ,info = info)
 
 @app.route('/statistics/overall')
 @login_required
 def overall_stats():
 	status="Overall"
+	c,conn = connection()
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'PENDING')",[thwart(session['userid'])])
+	conn.commit()
+	pending_count = c.fetchone()[0]
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'ACCEPTED')",[thwart(session['userid'])])
+	conn.commit()
+	accepted_count = c.fetchone()[0]
+	c.execute("SELECT COUNT(DISTINCT doc_id) AS totalcount FROM Document WHERE receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= 'REJECTED')",[thwart(session['userid'])])
+	conn.commit()
+	rejected_count = c.fetchone()[0]
+	print pending_count,rejected_count,accepted_count
+	print type(pending_count)
+	info = [int(pending_count) , int(accepted_count) , int(rejected_count)]
+	print info
 	return render_template("stats.html", status = status)
 
 @app.errorhandler(404)
@@ -508,3 +536,4 @@ def logout():
 if __name__ =="__main__":
 	app.debug = True
 	app.run()
+

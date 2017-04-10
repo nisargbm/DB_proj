@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="header">
                         <h2>
-                            {{ status }} Statistics
+                            {{ status }} Statistics {{ info }}
                         </h2>
                     </div>
                     <div class="body">
@@ -28,23 +28,26 @@
 
 function getChartJs(){
     var config = null;
+    console.log({{ info }});
+    var info = {{ info | tojson }};
+    console.log(info);
         config = {
             type: 'pie',
             data: {
                 datasets: [{
-                    data: [225, 50, 100, 40],
+                    data: info,
                     backgroundColor: [
-                        "rgb(233, 30, 99)",
+                        //"rgb(233, 30, 99)",
                         "rgb(255, 193, 7)",
                         "rgb(0, 188, 212)",
                         "rgb(139, 195, 74)"
                     ],
                 }],
                 labels: [
-                    "Pink",
-                    "Amber",
-                    "Cyan",
-                    "Light Green"
+                    //"pink",
+                    "Pending",
+                    "Accepted",
+                    "Rejected"
                 ]
             },
             options: {
@@ -52,6 +55,7 @@ function getChartJs(){
                 legend: false
             }
         }
+
     return config;
 }
 </script>

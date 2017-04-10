@@ -391,8 +391,8 @@ CREATE PROCEDURE totalcount(OUT total int)
  DECLARE total_accepted INT DEFAULT 0
  DECLARE total_docs INT DEFAULT 0
  DECLARE total INT DEFAULT 0
- SELECT COUNT(DISTINCT doc_id) AS totalcount INTO total_accepted
- FROM Document WHERE receiver = myid AND doc_id IN (
+ SELECT COUNT(DISTINCT doc_id) AS totalcount
+ FROM Document WHERE receiver = 'NISARG' AND doc_id IN (
 			    SELECT doc_id
 			    FROM Process
 			    WHERE status= 'PENDING'
@@ -705,4 +705,28 @@ DELIMITER ;
 
 
 INWARD QUERIES
+
+
+SELECT count(doc_id)
+FROM Document
+WHERE        doc_id IN (
+			  SELECT doc_id
+		          FROM Process
+			  WHERE status= 'PENDING'
+			)
+			AND receiver IN (
+			  SELECT user_id
+			  FROM User
+			  WHERE department = mydept
+			)
+            AND sender NOT IN(
+                SELECT user_id
+                FROM User
+                WHERE department = mydept)
+GROUP BY department;
+ 
+
+
+
+
 
