@@ -4565,6 +4565,11 @@ section.content {
   margin-bottom: 0; }
 
 /* Tables ====================================== */
+.table{
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
 .table tbody tr td, .table tbody tr th {
   padding: 10px;
   border-top: 1px solid #eee;
