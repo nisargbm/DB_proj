@@ -106,12 +106,6 @@ def existing_doc(variable):
 			conn.commit()
 			c.execute("UPDATE Document SET date_of_receipt = NOW() WHERE doc_id = (%s) AND sender = (%s) AND receiver = (%s);",[thwart(doc_id),thwart(sender),thwart(receiver)])
 			conn.commit()
-			
-			print(sender)
-			print(comments)
-			print(receiver)
-			print(doc_id)
-			print(status)
 
 			print("Thanks for uploading!")
 			c.close()
@@ -175,13 +169,6 @@ def new_doc():
 			no_docs = form.no_docs.data
 			reciever = form.to.data
 			# place = form.place.data
-			print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
-			print (sender)
-			print (subject)
-			print (doc_details)
-			print (org)
-			print (no_docs)
-			print(reciever)
 
 			c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
 			data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
@@ -220,9 +207,15 @@ def new_doc():
 @app.route('/database/', methods=["GET","POST"])
 def database():
 	if request.method == "POST":
-		print ("Hello",request.form.get("password"))
 		if request.form.get("password") == "12345":
 			c, conn = connection()
+			data = ""
+			name = ""
+			if request.form.get("query"):
+				c.execute(request.form.get("query"))
+				conn.commit
+				name = c.description
+				data = c.fetchall()
 			c.execute("SELECT * FROM User")
 			conn.commit()
 			User = c.fetchall()
@@ -238,7 +231,7 @@ def database():
 			c.close()
 			conn.close()
 			gc.collect()
-			return render_template("database.html", status="logged_in",User = User, Process = Process, Document = Document, Document_details = Document_details)
+			return render_template("database.html", status="logged_in", User = User, Process = Process, Document = Document, Document_details = Document_details, data = data, name = name)
 	return render_template("database.html", status="login" )
 
 @app.route('/history/received')

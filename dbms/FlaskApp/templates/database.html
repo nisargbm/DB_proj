@@ -8,6 +8,53 @@
             <div class="card">
                 <div class="header">
                     <h2>
+                        Query:
+                    </h2>
+                </div>
+                <div class="body">
+                    <form action="" method="POST">
+                        <label for="query">Enter Query:</label>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="query" placeholder="Query">
+                        </div>
+                        <label for="password">Enter Admin Password:</label>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enter</button>
+                    </form>
+                    {% if data %}
+                    <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                        <thead>
+                            <tr>
+                                {% for i in name %}
+                                    <th>{{ i[0] }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                {% for i in name %}
+                                    <th>{{ i[0] }}</th>
+                                {% endfor %}
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            {% for user in data %}
+                                <tr>
+                                    {% for d in user %}
+                                        <td>{{ d }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="header">
+                    <h2>
                         User
                     </h2>
                 </div>
@@ -174,9 +221,9 @@
         <div class="col-md-6">
             <label for="password">Enter Admin Password:</label>
             <div class="form-line">
-                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                <input type="password" autofocus="autofocus" class="form-control" name="password" placeholder="Password" required>
             </div>
-            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
+            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enter</button>
         </div>
     </form>
 </section>
