@@ -7,8 +7,6 @@ from functools import wraps
 import gc
 
 
-
-
 app = Flask(__name__)
 app.secret_key = "sdkjgly"
 
@@ -24,32 +22,26 @@ def login_required(f):
 
     return wrap
 
-class RegistrationForm(Form):
-    username = TextField('Username', [validators.Length(min=4, max=20)])
-    email = TextField('Email Address', [validators.Length(min=6, max=50)])
-    department = TextField('Department')
-    password = PasswordField('New Password', [
-        validators.Required(),
-        validators.EqualTo('confirm', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice', [validators.Required()])
-
-
-
-
 @app.route('/')
+def index():
+	if(session.get('logged_in')):
+		if(session['logged_in']):
+			return redirect(url_for('home'))
+	return redirect(url_for('homepage'))
+	
+@app.route('/homepage')
 def homepage():
 	if(session.get('logged_in')):
 		if(session['logged_in']):
 			return redirect(url_for('home'))
 	return render_template("homepage.html")
 
+
 @app.route('/track/<variable>')
 @login_required
 def track_doc(variable):
 	try:
 		c, conn = connection()
-		# Query pending because "HEMANG" has not writtern it and waants me to do something useful!
 		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND sender = (%s) AND user_id = receiver ORDER BY date_of_receipt DESC",[thwart(variable),thwart(session['userid'])])
 		conn.commit()
 		data = c.fetchall()
@@ -70,7 +62,6 @@ def photos_page():
 @login_required
 def home():
 	c, conn = connection()
-	#QUERY For Pending Documents
 	c.execute("SELECT doc_id,subject,details,sender FROM Process NATURAL JOIN Document_details NATURAL JOIN Document WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
@@ -82,88 +73,64 @@ def home():
 @app.route('/outward/')	
 @login_required
 def outward():
-	#c,conn =connection()
 	return render_template("outward_form.html")
 
 @app.route('/upload/')
 @login_required
 def upload():
 	return render_template("upload.html")
-
-class InwardExistingForm(Form):
-	userid = TextField('user_id')
-	comments = TextField('comment')
-	to = TextField('forward_person')
-	#status=TextField('status')
-	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 	
-
+	
 @app.route('/existing_doc/<variable>', methods=["GET","POST"])
 @login_required
 def existing_doc(variable):
 	try:
 		c, conn = connection()
-		form = InwardExistingForm(request.form)		
+		c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
+		conn.commit()
+		doc_details = c.fetchone()	
 		if request.method == "POST" :
-			sender  = session['userid']
-			reciever = form.to.data
-			comment = form.comment.data
-			print form.to.data
-			#print form.status.data
-			#status = form.status.data
-			# place = form.place.data
-			# print (session['userid'],form.subject.data,form.document_details.data,form.organization.data,form.no_docs.data,form.to.data)
-			# print (sender)
-			# print (subject)
-			# print (doc_details)
-			# print (org)
-			# print (no_docs)
-			# print(reciever)
+			sender  = session['userid'];
+			comments = request.form.get('comment')
+			receiver = request.form.get('to')
+			doc_id = variable
+			if(request.form.get('status')):
+				status = "ACCEPTED"
+			else:
+				status = "REJECTED"
 
-			# c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
-			# data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
-			# data = c.fetchone()
-			# doc_id1=data[0]
-			# c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
-			# c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
-			# c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
+			# c.execute("") #QUERY
 			# conn.commit()
-			# print("Thanks for uploading!")
-			# c.close()
-			# conn.close()
-			# gc.collect()
+			print(sender)
+			print(comments)
+			print(receiver)
+			print(doc_id)
+			print(status)
+
+			print("Thanks for uploading!")
+			c.close()
+			conn.close()
+			gc.collect()
 			return redirect(url_for('home'))
-		else:
-			c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
-			conn.commit()
-			data1 = c.fetchall()
-			#print data1
-			c.execute("SELECT DISTINCT department FROM User")
+
+		c.execute("SELECT DISTINCT department FROM User")
+		conn.commit()
+		data = c.fetchall()
+		dept = []
+		for u in data:
+			dept.append(u[0])
+		users = []
+		for d in dept:
+			c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
 			conn.commit()
 			data = c.fetchall()
-			dept = []
+			names = []
 			for u in data:
-				dept.append(u[0])
-			users = []
-			for d in dept:
-				c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
-				conn.commit()
-				data = c.fetchall()
-				names = []
-				for u in data:
-					names.append(u[0])
-				users.append(names)
-			return render_template("existing_doc.html",form=form, users = users, dept = dept,data1 = data1)
+				names.append(u[0])
+			users.append(names)
+		return render_template("existing_doc.html", users = users, dept = dept, doc_details = doc_details)
 	except Exception as e:
 		print (str(e))
 		return(str(e))
-    # c, conn = connection()
-    # c.execute("SELECT * FROM User WHERE user_id = (%s)", [thwart(variable)])
-    # #conn.commit()
-    # data = c.fetchall()
-    # c.close()
-    # conn.close()
-    # gc.collect()
-    # return render_template("existing_doc.html", data = data)
 
 @app.route('/my_docs/')
 @login_required
@@ -267,8 +234,6 @@ def received_individual():
             print("Getting data from form")
             person  = request.form.get("user_id")
             status  = request.form.get("status")
-            print person
-            print status
             c.execute("SELECT doc_id, subject, details, sender FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status = (%s));",[thwart(person), thwart(session['userid']), thwart(status)])
             conn.commit()
             table = c.fetchall()
@@ -322,51 +287,55 @@ def history_sent():
 @app.route('/history/sent/individual/', methods=["GET","POST"])
 def sent_individual():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            person  = request.form.get("user_id")
+            status  = request.form.get("status")
+            c.execute("") ###################################QUERY
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
     c.execute("SELECT * FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("individual.html", data = data)
+    return render_template("individual.html", data = data, table = table)
 
 @app.route('/history/sent/department/', methods=["GET","POST"])
 def sent_department():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            dept  = request.form.get("dept")
+            status  = request.form.get("status")
+            c.execute("")###################################QUERY
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
+    c.execute("SELECT DISTINCT department FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("department.html", data = data)
+    return render_template("department.html", data = data, table = table)
 
 @app.route('/history/sent/overall/', methods=["GET","POST"])
 def sent_overall():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    c.execute("")###################################QUERY
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
     return render_template("overall.html", data = data)
-
-@app.route('/history/')
-def history_page():
-    history_cat = "overall"
-    c, conn = connection()
-	###############QUERY FOR OVERALL HISTORY
-    c.execute("SELECT * FROM User")
-    conn.commit()
-    data = c.fetchall()
-    c.close()
-    conn.close()
-    gc.collect()
-    return render_template("history.html", data = data, history_cat = history_cat, text = "Overall History")
 
 @app.route('/history/overall')
 def history_overall():
@@ -376,32 +345,49 @@ def history_overall():
 @app.route('/history/overall/individual/', methods=["GET","POST"])
 def overall_individual():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            person  = request.form.get("user_id")
+            status  = request.form.get("status")
+            c.execute("") ###################################QUERY
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
     c.execute("SELECT * FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("individual.html", data = data)
+    return render_template("individual.html", data = data, table = table)
 
 @app.route('/history/overall/department/', methods=["GET","POST"])
 def overall_department():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    table = ""
+    if request.method == "POST" :
+            print("Getting data from form")
+            dept  = request.form.get("dept")
+            status  = request.form.get("status")
+            c.execute("")###################################QUERY
+            conn.commit()
+            table = c.fetchall()
+            print ("table")
+            print (table)
+    c.execute("SELECT DISTINCT department FROM User")
     conn.commit()
     data = c.fetchall()
     c.close()
     conn.close()
     gc.collect()
-    return render_template("department.html", data = data)
+    return render_template("department.html", data = data, table = table)
 
 @app.route('/history/overall/overall/', methods=["GET","POST"])
 def overall_overall():
     c, conn = connection()
-	###############QUERY FOR received HISTORY
-    c.execute("SELECT * FROM User")
+    c.execute("")###################################QUERY
     conn.commit()
     data = c.fetchall()
     c.close()
@@ -409,11 +395,32 @@ def overall_overall():
     gc.collect()
     return render_template("overall.html", data = data)
 
+@app.route('/statistics/my_stats')
+@login_required
+def my_stats():
+	status="Personal"
+	return render_template("stats.html", status = status)
+
+@app.route('/statistics/overall')
+@login_required
+def overall_stats():
+	status="Overall"
+	return render_template("stats.html", status = status)
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
 
 
+class RegistrationForm(Form):
+    username = TextField('Username', [validators.Length(min=4, max=20)])
+    email = TextField('Email Address', [validators.Length(min=6, max=50)])
+    department = TextField('Department')
+    password = PasswordField('New Password', [
+        validators.Required(),
+        validators.EqualTo('confirm', message='Passwords must match')])
+    confirm = PasswordField('Repeat Password')
+    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice', [validators.Required()])
 
 
 @app.route('/register/', methods=["GET","POST"])
@@ -470,9 +477,6 @@ def login_page():
             password = data[1]
             email = data[2]
             userid = data[0]
-            print email,userid,password
-            print request.form['username'].upper(),request.form['password']
-
             if sha256_crypt.verify(request.form['password'], password):
                 session['logged_in'] = True
                 session['userid'] = request.form['username'].upper()
@@ -499,7 +503,7 @@ def login_page():
 def logout():
     session.clear()
     gc.collect()
-    return redirect(url_for('home'))
+    return redirect(url_for('homepage'))
 
 if __name__ =="__main__":
 	app.debug = True
