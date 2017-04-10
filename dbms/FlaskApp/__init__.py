@@ -42,7 +42,7 @@ def homepage():
 def track_doc(variable):
 	try:
 		c, conn = connection()
-		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND sender = (%s) AND user_id = receiver ORDER BY date_of_receipt DESC",[thwart(variable),thwart(session['userid'])])
+		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND user_id = receiver AND movement_date = move_date ORDER BY date_of_receipt DESC;",[thwart(variable)])
 		conn.commit()
 		data = c.fetchall()
 		return render_template("doc_track.html", data = data)
@@ -62,7 +62,7 @@ def photos_page():
 @login_required
 def home():
 	c, conn = connection()
-	c.execute("SELECT doc_id,subject,details,sender FROM Process NATURAL JOIN Document_details NATURAL JOIN Document WHERE user_id = (%s) AND status = 'PENDING' ORDER BY movement_date DESC ;",[thwart(session['userid'])])
+	c.execute("SELECT DISTINCT doc_id,subject,details,sender FROM Process NATURAL JOIN Document NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' AND receiver = (%s) AND movement_date = move_date;",[thwart(session['userid']),thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
@@ -98,8 +98,15 @@ def existing_doc(variable):
 			else:
 				status = "REJECTED"
 
-			# c.execute("") #QUERY
-			# conn.commit()
+			c.execute("INSERT INTO Process(user_id,doc_id) VALUES((%s),(%s));", [thwart(receiver),thwart(doc_id)])
+			conn.commit()
+			c.execute("INSERT INTO Document(doc_id,sender,receiver) VALUES ((%s),(%s),(%s));", [thwart(doc_id), thwart(sender), thwart(receiver)])
+			conn.commit()
+			c.execute("UPDATE Process SET status = (%s), comment = (%s) WHERE doc_id = (%s) AND user_id = (%s) AND status = 'PENDING';",[thwart(status),thwart(comments),thwart(doc_id), thwart(sender)])
+			conn.commit()
+			c.execute("UPDATE Document SET date_of_receipt = NOW() WHERE doc_id = (%s) AND sender = (%s) AND receiver = (%s);",[thwart(doc_id),thwart(sender),thwart(receiver)])
+			conn.commit()
+			
 			print(sender)
 			print(comments)
 			print(receiver)
@@ -234,7 +241,7 @@ def received_individual():
             print("Getting data from form")
             person  = request.form.get("user_id")
             status  = request.form.get("status")
-            c.execute("SELECT doc_id, subject, details, sender FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status = (%s));",[thwart(person), thwart(session['userid']), thwart(status)])
+            c.execute("SELECT doc_id, subject, details, sender FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE sender = (%s) AND receiver = (%s) AND status = (%s) AND user_id = receiver;",[thwart(person), thwart(session['userid']), thwart(status)])
             conn.commit()
             table = c.fetchall()
             print ("table")
