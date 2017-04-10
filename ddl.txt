@@ -32,6 +32,7 @@ CREATE TABLE Document_details(
 	CHECK (number_of_documents >=1),
     organisation varchar (255) NOT NULL,
 	details varchar (255),
+	move_date datetime NOT NULL DEFAULT NOW(),
     PRIMARY KEY (doc_id)     
 );
 

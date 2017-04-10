@@ -42,7 +42,7 @@ def homepage():
 def track_doc(variable):
 	try:
 		c, conn = connection()
-		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND user_id = receiver ORDER BY date_of_receipt DESC",[thwart(variable)])
+		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND user_id = receiver AND movement_date = move_date ORDER BY date_of_receipt DESC;",[thwart(variable)])
 		conn.commit()
 		data = c.fetchall()
 		return render_template("doc_track.html", data = data)
@@ -62,7 +62,7 @@ def photos_page():
 @login_required
 def home():
 	c, conn = connection()
-	c.execute("SELECT DISTINCT doc_id,subject,details,sender FROM Process NATURAL JOIN Document_details NATURAL JOIN Document WHERE user_id = (%s) AND status = 'PENDING' AND receiver = (%s);",[thwart(session['userid']),thwart(session['userid'])])
+	c.execute("SELECT DISTINCT doc_id,subject,details,sender FROM Process NATURAL JOIN Document NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' AND receiver = (%s) AND movement_date = move_date;",[thwart(session['userid']),thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
@@ -102,7 +102,9 @@ def existing_doc(variable):
 			conn.commit()
 			c.execute("INSERT INTO Document(doc_id,sender,receiver) VALUES ((%s),(%s),(%s));", [thwart(doc_id), thwart(sender), thwart(receiver)])
 			conn.commit()
-			c.execute("UPDATE Process SET status = (%s), comment = (%s) WHERE doc_id = (%s) AND user_id = (%s)",[thwart(status),thwart(comments),thwart(doc_id), thwart(sender)])
+			c.execute("UPDATE Process SET status = (%s), comment = (%s) WHERE doc_id = (%s) AND user_id = (%s) AND status = 'PENDING';",[thwart(status),thwart(comments),thwart(doc_id), thwart(sender)])
+			conn.commit()
+			c.execute("UPDATE Document SET date_of_receipt = NOW() WHERE doc_id = (%s) AND sender = (%s) AND receiver = (%s);",[thwart(doc_id),thwart(sender),thwart(receiver)])
 			conn.commit()
 			
 			print(sender)
