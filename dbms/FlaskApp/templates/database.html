@@ -216,16 +216,21 @@
       </div>
     </section>
 {% else %}
-<section class="content">
-    <form action="" method="POST">
-        <div class="col-md-6">
-            <label for="password">Enter Admin Password:</label>
-            <div class="form-line">
-                <input type="password" autofocus="autofocus" class="form-control" name="password" placeholder="Password" required>
+<body id="particles-js" style="background: #236B8E;">
+    <section class="content">
+        <form action="" method="POST">
+            <div class="col-md-6">
+                <label for="password">Enter Admin Password:</label>
+                <div class="form-line">
+                    <input type="password" autofocus="autofocus" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enter</button>
             </div>
-            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Enter</button>
-        </div>
-    </form>
-</section>
+        </form>
+    </section>
+</body>
+
+<script type="text/javascript" src="{{ url_for('static', filename='particles/particles.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='particles/app.js') }}"></script>
 {% endif %}
 {% endblock %}
