@@ -70,10 +70,7 @@ def home():
 	gc.collect()
 	return render_template("home.html", data=data)
 
-@app.route('/outward/')	
-@login_required
-def outward():
-	return render_template("outward_form.html")
+
 
 @app.route('/upload/')
 @login_required
@@ -238,6 +235,118 @@ def database():
 def history_recieved():
     history_cat = "received"
     return render_template("history.html", history_cat = history_cat)
+
+@app.route('/new_outward_form/', methods=["GET","POST"])
+@login_required
+def new_outward_form():
+	try:
+		c, conn = connection()
+		form = InwardNewForm(request.form)		
+		if request.method == "POST" :
+			sender  = session['userid'];
+			subject = form.subject.data
+			doc_details = form.document_details.data
+			org = form.organization.data
+			no_docs = form.no_docs.data
+			reciever = form.to.data
+			# place = form.place.data
+			send_place = request.form.get("sending_place")
+			to_whom = request.form.get("to_whom")
+			c.execute("INSERT INTO Document_details( subject, number_of_documents, details, organisation ) VALUES (%s, %s, %s, %s)",[ thwart(subject), thwart(no_docs), thwart(doc_details), thwart(org)])
+			data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
+			data = c.fetchone()
+			doc_id1=data[0]
+			c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
+			c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
+			c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
+			conn.commit()
+			print("Thanks for uploading!")
+			
+			c.execute("INSERT INTO Outward (sending_place, to_whom_addressed) VALUES (%s,%s)",[ thwart(send_place), thwart(to_whom)])
+			conn.commit()
+			c.close()
+			conn.close()
+			gc.collect()
+			return redirect(url_for('home'))
+		else:
+			c.execute("SELECT DISTINCT department FROM User")
+			conn.commit()
+			data = c.fetchall()
+			dept = []
+			for u in data:
+				dept.append(u[0])
+			users = []
+			for d in dept:
+				c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
+				conn.commit()
+				data = c.fetchall()
+				names = []
+				for u in data:
+					names.append(u[0])
+				users.append(names)
+			return render_template("new_outward_form.html",form=form, users = users, dept = dept)
+	except Exception as e:
+		print (str(e))
+		return(str(e))
+
+
+@app.route('/old_outward_form/<variable>', methods=["GET","POST"])
+@login_required
+def old_outward_form(variable):
+	try:
+		c, conn = connection()
+		c.execute("SELECT sender,doc_id,subject,organisation,details,number_of_documents FROM Document_details NATURAL JOIN Document WHERE doc_id=(%s) AND receiver=(%s)",[thwart(variable), session['userid']])
+		conn.commit()
+		doc_details = c.fetchone()	
+		if request.method == "POST" :
+			sender  = session['userid'];
+			comments = request.form.get('comment')
+			receiver = request.form.get('to')
+			doc_id = variable
+			if(request.form.get('status')):
+				status = "ACCEPTED"
+			else:
+				status = "REJECTED"
+			send_place = request.form.get("sending_place")
+			to_whom = request.form.get("to_whom")
+
+			c.execute("INSERT INTO Process(user_id,doc_id) VALUES((%s),(%s));", [thwart(receiver),thwart(doc_id)])
+			conn.commit()
+			c.execute("INSERT INTO Document(doc_id,sender,receiver) VALUES ((%s),(%s),(%s));", [thwart(doc_id), thwart(sender), thwart(receiver)])
+			conn.commit()
+			c.execute("UPDATE Process SET status = (%s), comment = (%s) WHERE doc_id = (%s) AND user_id = (%s) AND status = 'PENDING';",[thwart(status),thwart(comments),thwart(doc_id), thwart(sender)])
+			conn.commit()
+			c.execute("UPDATE Document SET date_of_receipt = NOW() WHERE doc_id = (%s) AND sender = (%s) AND receiver = (%s);",[thwart(doc_id),thwart(sender),thwart(receiver)])
+			conn.commit()
+
+			print("Thanks for uploading!")
+			c.execute("INSERT INTO Outward (sending_place, to_whom_addressed) VALUES (%s,%s)",[ thwart(send_place), thwart(to_whom)])
+			conn.commit()
+			c.close()
+			conn.close()
+			gc.collect()
+			return redirect(url_for('home'))
+
+		c.execute("SELECT DISTINCT department FROM User")
+		conn.commit()
+		data = c.fetchall()
+		dept = []
+		for u in data:
+			dept.append(u[0])
+		users = []
+		for d in dept:
+			c.execute("SELECT user_id FROM User WHERE department = (%s)",[thwart(d)])
+			conn.commit()
+			data = c.fetchall()
+			names = []
+			for u in data:
+				names.append(u[0])
+			users.append(names)
+		return render_template("old_outward_form.html", users = users, dept = dept, doc_details = doc_details)
+	except Exception as e:
+		print (str(e))
+		return(str(e))
+
 
 @app.route('/history/received/individual/', methods=["GET","POST"])
 def received_individual():

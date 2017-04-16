@@ -1,4 +1,4 @@
-﻿{% extends "dashboard.html" %} {% block title %}Home{% endblock %} {% block body %}
+{% extends "dashboard.html" %} {% block title %}Home{% endblock %} {% block body %}
 <section class="content">
     <div class="container-fluid">
         <div class="row clearfix">
@@ -34,43 +34,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row clearfix">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div class="card">
-                                        <div class="header">
-                                            <h2>
-                               Forward To
-                                
-                            </h2>
-                                        </div>
-                                        <div class="body">
-                                            <div class="row clearfix">
-                                                <div class="col-sm-6">
-                                                    <select id='A' name='department'>
-                                                        <option onclick="window.location.href='/old_outward_form/';">Other</option>
-                                                        <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
-                                                        {% for i in range(1,dept|length) %}
-                                                        <option value="{{ dept[i] }}">{{ dept[i] }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <select id='B' name='to'></select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="body">
-                                            <h2 class="card-inside-title">Status</h2>
-                                            <div class="demo-switch">
-                                                <div class="switch">
-                                                    <label>Rejected
-                                                        <input type="checkbox" name="status" value="1" checked="checked"><span class="lever"></span>Accepted</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            
                 <form action="" method="POST">
                     <div class="card">
                         <div class="header">
@@ -108,6 +72,51 @@
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+    <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Outward
+                            </h2>
+                           
+                        </div>
+                        <div class="body">
+                            <form action="" method="POST">
+                                <label for="sending-place">Sending Place</label>
+                                <div class="form-group" name = "sending_place">
+                                    <div class="form-line">
+                                        <input type="text" id="sending-place" class="form-control" placeholder="Enter sending place">
+                                    </div>
+                                </div>
+                                <label for="to_whom_addressed">To whom Addressed</label>
+                                <div class="form-group" name = "to_whom">
+                                    <div class="form-line">
+                                        <input type="text" id="to_whom_addressed" class="form-control" placeholder="To whom is this document addressed">
+                                    </div>
+                                </div>
+                                 <label for="type_of_post">Type of post</label>
+                                <div class="form-group" name = "type_of_post">
+                                    <div class="form-line">
+                                        <input type="text" id="type_of_post" class="form-control" placeholder="Enter type of post">
+                                    </div>
+                                </div>
+
+                                 <label for="estimated_cost">Estimated cost</label>
+                                <div class="form-group" name = "estimated_cost">
+                                    <div class="form-line">
+                                        <input type="text" id="estimated_cost" class="form-control" placeholder="Enter estimated cost">
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-primary m-t-15 waves-effect">Proceed</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
 </section>
 <script type="text/javascript">
 var users = {{ users | tojson }};
