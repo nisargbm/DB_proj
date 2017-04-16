@@ -19,7 +19,8 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 
-<body class="login-page">
+<body id="particles-js" style="background: #236B8E; z-index: 1">
+    <div class="login-page" style="z-index: 9999">
     <div class="login-box">
         <div class="logo">
             <a href="javascript:void(0);">Login</a>
@@ -66,7 +67,8 @@
             </div>
         </div>
     </div>
-
+</div>
+</div>
     <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
 
     <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.js') }}"></script>
@@ -78,6 +80,7 @@
     <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 
     <script src="{{ url_for('static', filename='js/pages/examples/sign-in.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='particles/particles.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='particles/app.js') }}"></script>
 </body>
-
 </html>
