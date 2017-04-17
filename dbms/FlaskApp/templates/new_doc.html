@@ -1,113 +1,113 @@
 ﻿{% extends "dashboard.html" %} {% block title %} Home {% endblock %} {% block body %}
-
 <section class="content">
     <div class="container-fluid">
         <div class="row clearfix">
+            <form action="/new_doc/" id="new_doc" method="POST">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                            Forward To
+                                        </h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <select id='A' name='department'>
+                                        <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
+                                        {% for i in range(1,dept|length) %}
+                                        <option value="{{ dept[i] }}">{{ dept[i] }}</option>
+                                        {% endfor %}
+                                        <option onclick="window.location.href='/new_outward_form/';">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select id='B' name='to'></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="card">
-                    <form action="/new_doc/" id="new_doc" method="POST">
-                        <div class="header">
-                            <h2>From</h2>
-                        </div>
-                        <div class="body">
-                            <div class="row clearfix">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <div class="form-line">
-                                            <textarea disabled rows="1" class="form-control no-resize" name="user_id">{{ session.userid }}</textarea>
-                                        </div>
+                    <div class="header">
+                        <h2>From</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <textarea disabled rows="1" class="form-control no-resize" name="user_id">{{session.userid }}</textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="header">
-                            <h2>Subject</h2>
-                        </div>
-                        <div class="body">       
-                            <div class="row clearfix">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <div class="form-line">
-                                            <textarea rows="1" class="form-control no-resize" placeholder="Subject" name="subject"></textarea>
-                                        </div>
+                    </div>
+                    <div class="header">
+                        <h2>Subject</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <textarea rows="1" class="form-control no-resize" placeholder="Subject" name="subject"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="header">
-                            <h2>Document Details</h2>
-                        </div>
-                        <div class="body">
-                            <div class="row clearfix">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <div class="form-line">
-                                            <textarea rows="4" class="form-control no-resize" placeholder="Details of the Document" name="document_details"></textarea>
-                                        </div>
+                    </div>
+                    <div class="header">
+                        <h2>Document Details</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <textarea rows="4" class="form-control no-resize" placeholder="Details of the Document" name="document_details"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="header">
-                            <h2>Organization</h2>
-                        </div>
-                        <div class="body">
-                            <div class="row clearfix">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <div class="form-line">
-                                            <textarea rows="1" class="form-control no-resize" placeholder="Organization name of reciever" name="organization"></textarea>
-                                        </div>
+                    </div>
+                    <div class="header">
+                        <h2>Organization</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <div class="form-line">
+                                        <textarea rows="1" class="form-control no-resize" placeholder="Organization name of reciever" name="organization"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="header">
-                            <h2>No. of Documents</h2>
-                        </div>
-                        <div class="body">
-                            <div class="row clearfix">
-                                <div class="col-sm-3">
-                                    <div class="input-group spinner" data-trigger="spinner">
-                                        <div class="form-line">
-                                            <input type="text" class="form-control text-center" value="1" data-rule="quantity" name="no_docs">
-                                        </div>
-                                        <span class="input-group-addon">
+                    </div>
+                    <div class="header">
+                        <h2>No. of Documents</h2>
+                    </div>
+                    <div class="body">
+                        <div class="row clearfix">
+                            <div class="col-sm-3">
+                                <div class="input-group spinner" data-trigger="spinner">
+                                    <div class="form-line">
+                                        <input type="text" class="form-control text-center" value="1" data-rule="quantity" name="no_docs">
+                                    </div>
+                                    <span class="input-group-addon">
                                             <a href="javascript:;" class="spin-up" data-spin="up"><i class="glyphicon glyphicon-chevron-up"></i></a>
                                             <a href="javascript:;" class="spin-down" data-spin="down"><i class="glyphicon glyphicon-chevron-down"></i></a>
                                         </span>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row clearfix">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <div class="card">
-                                    <div class="header">
-                                        <h2>
-                                            Forward To
-                                        </h2>
-                                    </div>
-                                    <div class="body">
-                                        <div class="row clearfix">
-                                            <div class="col-sm-6">
-                                                <select id='A' name='department'>
-                                                    <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
-                                                    {% for i in range(1,dept|length) %}
-                                                    <option value="{{ dept[i] }}">{{ dept[i] }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                                </div>
-                                            <div class="col-sm-6">
-                                                <select id='B' name='to'></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
-                        </form>
+                    </div>
+                    <button type="submit" class="btn btn-primary m-t-15 waves-effect">Upload</button>
+                    </form>
                 </div>
                 <!-- <div class="header">
                         <h2>Place of recieving</h2>
@@ -133,22 +133,29 @@
         </div>
     </div>
 </section>
-
 <script type="text/javascript">
-    var users = {{ users|tojson }};
-    var A = document.getElementById("A");
-    var B = document.getElementById("B");
-    A.onchange = function(){
-        B.length = 0;
-        var _val = this.selectedIndex;
-        for ( var i in users[_val]){
-            var op = document.createElement('option');
-            op.value = users[_val][i];
-            op.text = users[_val][i];
-            B.appendChild(op);
+var users = {
+    {
+        users | tojson
+    }
+};
+var A = document.getElementById("A");
+var B = document.getElementById("B");
+A.onchange = function() {
+    B.length = 0;
+    var flag = 0;
+    var _val = this.selectedIndex;
+    for (var i in users[_val]) {
+        var op = document.createElement('option');
+        if (flag == 0) {
+            op.selected = "selected";
+            flag = 1;
         }
-    };
-    A.onchange();
+        op.value = users[_val][i];
+        op.text = users[_val][i];
+        B.appendChild(op);
+    }
+};
+A.onchange();
 </script>
-
 {% endblock %}

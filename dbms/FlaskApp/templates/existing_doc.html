@@ -2,39 +2,76 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row clearfix">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="card">
-                    <div class="header">
-                        <h2>
+            <form action="" method="POST">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
                         Sender
                         </h2>
+                        </div>
+                        <div class="body">
+                            <table class="table table-bordered table-striped dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Sender</th>
+                                        <th>Document ID</th>
+                                        <th>Subject</th>
+                                        <th>Organization</th>
+                                        <th>Details</th>
+                                        <th>No of documents</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td name="sender">{{ doc_details[0] }}</td>
+                                        <td name="docid">{{ doc_details[1] }}</td>
+                                        <td name="subject">{{ doc_details[2] }}</td>
+                                        <td name="org">{{ doc_details[3] }}</td>
+                                        <td name="details">{{ doc_details[4] }}</td>
+                                        <td name="numberdocs">{{ doc_details[5] }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="body">
-                        <table class="table table-bordered table-striped dataTable" style="table-layout: fixed; word-wrap: break-word;">
-                            <thead>
-                                <tr>
-                                    <th>Sender</th>
-                                    <th>Document ID</th>
-                                    <th>Subject</th>
-                                    <th>Organization</th>
-                                    <th>Details</th>
-                                    <th>No of documents</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td name="sender">{{ doc_details[0] }}</td>
-                                    <td name="docid">{{ doc_details[1] }}</td>
-                                    <td name="subject">{{ doc_details[2] }}</td>
-                                    <td name="org">{{ doc_details[3] }}</td>
-                                    <td name="details">{{ doc_details[4] }}</td>
-                                    <td name="numberdocs">{{ doc_details[5] }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row clearfix">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="card">
+                                <div class="header">
+                                    <h2>
+                               Forward To
+                                
+                            </h2>
+                                </div>
+                                <div class="body">
+                                    <div class="row clearfix">
+                                        <div class="col-sm-6">
+                                            <select id='A' name='department'>
+                                                <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
+                                                {% for i in range(1,dept|length) %}
+                                                <option value="{{ dept[i] }}">{{ dept[i] }}</option>
+                                                {% endfor %}
+                                                <option onclick="window.location.href='/old_outward_form/{{doc_details[1]}}';">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <select id='B' name='to'></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="body">
+                                    <h2 class="card-inside-title">Status</h2>
+                                    <div class="demo-switch">
+                                        <div class="switch">
+                                            <label>Rejected
+                                                <input type="checkbox" name="status" value="1" checked="checked"><span class="lever"></span>Accepted</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <form action="" method="POST">
                     <div class="card">
                         <div class="header">
                             <h2>From</h2>
@@ -63,52 +100,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row clearfix">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div class="card">
-                                        <div class="header">
-                                            <h2>
-                               Forward To
-                                
-                            </h2>
-                                        </div>
-                                        <div class="body">
-                                            <div class="row clearfix">
-                                                <div class="col-sm-6">
-                                                    <select id='A' name='department'>
-                                                        <option value='{{ dept[0] }}' selected='selected'>{{ dept[0] }}</option>
-                                                        {% for i in range(1,dept|length) %}
-                                                        <option value="{{ dept[i] }}">{{ dept[i] }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <select id='B' name='to'></select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="body">
-                                            <h2 class="card-inside-title">Status</h2>
-                                            <div class="demo-switch">
-                                                <div class="switch">
-                                                    <label>Rejected
-                                                        <input type="checkbox" name="status" value="1" checked="checked"><span class="lever"></span>Accepted</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <input type="submit" value="Submit" class="btn btn-primary m-t-15 waves-effect">
                         </div>
                     </div>
-                </form>
+            </form>
             </div>
         </div>
     </div>
 </section>
 <script type="text/javascript">
-var users = {{ users | tojson }};
+var users = {
+    {
+        users | tojson
+    }
+};
 var A = document.getElementById("A");
 var B = document.getElementById("B");
 A.onchange = function() {
@@ -124,5 +129,3 @@ A.onchange = function() {
 A.onchange();
 </script>
 {% endblock %}
-
-                

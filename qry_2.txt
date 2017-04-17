@@ -726,6 +726,90 @@ WHERE        doc_id IN (
 GROUP BY department;
  
 
+*************************************************************************************************************************************************************************************************
+
+Overall History Queries
+
+1.1 overall department PENDING query
+
+SELECT doc_id, subject, details,receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = myid OR receiver = myid AND doc_id IN (
+			                                          SELECT doc_id
+		                                              FROM Process
+			                                          WHERE status= 'PENDING'
+			                                        )
+			                                        AND receiver IN (
+			                                          SELECT user_id
+			                                          FROM User
+			                                          WHERE department = input
+			                                        );
+
+1.2 overall department ACCEPTED query
+
+SELECT doc_id, subject, details,receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = myid OR receiver = myid AND doc_id IN (
+			                                          SELECT doc_id
+		                                              FROM Process
+			                                          WHERE status= 'ACCEPTED'
+			                                        )
+			                                        AND receiver IN (
+			                                          SELECT user_id
+			                                          FROM User
+			                                          WHERE department = input
+			                                        );
+
+1.3 overall department REJECTED query
+
+SELECT doc_id, subject, details, receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE sender = myid OR receiver = myid AND doc_id IN (
+			                                          SELECT doc_id
+		                                              FROM Process
+			                                          WHERE status= 'REJECTED'
+			                                        )
+			                                        AND receiver IN (
+			                                          SELECT user_id
+			                                          FROM User
+			                                          WHERE department = input
+			                                        );
+2.1 overall individual PENDING query
+
+SELECT doc_id, subject,details, receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE (sender = myid AND receiver = hisid) OR (sender = hisid AND receiver = myid) AND doc_id IN (
+		                                                                                          	SELECT doc_id
+		                                                                                          	FROM Process
+		                                                                                          	WHERE status= 'PENDING'
+	                                                                                           	 );
+
+2.2 overall individual ACCEPTED query
+
+SELECT doc_id, subject,details,receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE (sender = myid AND receiver = hisid) OR (sender = hisid AND receiver = myid) AND doc_id IN (
+		                                                                                          	SELECT doc_id
+		                                                                                          	FROM Process
+		                                                                                          	WHERE status= 'ACCEPTED'
+	                                                                                           	 );
+
+
+2.3 overall individual REJECTED query
+
+SELECT doc_id, subject,details,receiver
+FROM Document
+NATURAL JOIN Document_details
+WHERE (sender = myid AND receiver = hisid) OR (sender = hisid AND receiver = myid) AND doc_id IN (
+		                                                                                          	SELECT doc_id
+		                                                                                          	FROM Process
+		                                                                                          	WHERE status= 'REJECTED'
+	                                                                                           	 );
 
 
 

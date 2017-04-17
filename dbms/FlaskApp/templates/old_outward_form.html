@@ -1,0 +1,139 @@
+{% extends "dashboard.html" %} {% block title %}Home{% endblock %} {% block body %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>
+                        Sender
+                        </h2>
+                    </div>
+                    <div class="body">
+                        <table class="table table-bordered table-striped dataTable" style="table-layout: fixed; word-wrap: break-word;">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Document ID</th>
+                                    <th>Subject</th>
+                                    <th>Organization</th>
+                                    <th>Details</th>
+                                    <th>No of documents</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td name="sender">{{ doc_details[0] }}</td>
+                                    <td name="docid">{{ doc_details[1] }}</td>
+                                    <td name="subject">{{ doc_details[2] }}</td>
+                                    <td name="org">{{ doc_details[3] }}</td>
+                                    <td name="details">{{ doc_details[4] }}</td>
+                                    <td name="numberdocs">{{ doc_details[5] }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+                <form action="" method="POST">
+                    <div class="card">
+                        <div class="header">
+                            <h2>From</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea disabled rows="1" class="form-control no-resize" name="userid">{{ session.userid }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header">
+                            <h2>Comments</h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="4" class="form-control no-resize" placeholder="Please type what you want..." name="comment"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <input type="submit" value="Submit" class="btn btn-primary m-t-15 waves-effect">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+    <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Outward
+                            </h2>
+                           
+                        </div>
+                        <div class="body">
+                            <form action="" method="POST">
+                                <label for="sending-place">Sending Place</label>
+                                <div class="form-group" name = "sending_place">
+                                    <div class="form-line">
+                                        <input type="text" id="sending-place" class="form-control" placeholder="Enter sending place">
+                                    </div>
+                                </div>
+                                <label for="to_whom_addressed">To whom Addressed</label>
+                                <div class="form-group" name = "to_whom">
+                                    <div class="form-line">
+                                        <input type="text" id="to_whom_addressed" class="form-control" placeholder="To whom is this document addressed">
+                                    </div>
+                                </div>
+                                 <label for="type_of_post">Type of post</label>
+                                <div class="form-group" name = "type_of_post">
+                                    <div class="form-line">
+                                        <input type="text" id="type_of_post" class="form-control" placeholder="Enter type of post">
+                                    </div>
+                                </div>
+
+                                 <label for="estimated_cost">Estimated cost</label>
+                                <div class="form-group" name = "estimated_cost">
+                                    <div class="form-line">
+                                        <input type="text" id="estimated_cost" class="form-control" placeholder="Enter estimated cost">
+                                    </div>
+                                </div>
+                                <br>
+                                <button type="button" class="btn btn-primary m-t-15 waves-effect">Proceed</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+</section>
+<script type="text/javascript">
+var users = {{ users | tojson }};
+var A = document.getElementById("A");
+var B = document.getElementById("B");
+A.onchange = function() {
+    B.length = 0;
+    var _val = this.selectedIndex;
+    for (var i in users[_val]) {
+        var op = document.createElement('option');
+        op.value = users[_val][i];
+        op.text = users[_val][i];
+        B.appendChild(op);
+    }
+};
+A.onchange();
+</script>
+{% endblock %}
+
+                
