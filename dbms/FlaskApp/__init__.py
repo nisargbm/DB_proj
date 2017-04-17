@@ -301,8 +301,8 @@ def old_outward_form(variable):
 		doc_details = c.fetchone()	
 		if request.method == "POST" :
 			sender  = session['userid'];
-			comments = request.form.get('comment')
-			receiver = request.form.get('to')
+			comments = request.form.get("comment")
+			receiver = "OUTWARD"
 			doc_id = variable
 			if(request.form.get('status')):
 				status = "ACCEPTED"
@@ -310,6 +310,10 @@ def old_outward_form(variable):
 				status = "REJECTED"
 			send_place = request.form.get("sending_place")
 			to_whom = request.form.get("to_whom")
+			post_type = request.form.get("type_of_post")
+			cost = request.form.get("estimated_cost")
+
+			print(sender,comments,receiver,doc_id,status,send_place,to_whom)
 
 			c.execute("INSERT INTO Process(user_id,doc_id) VALUES((%s),(%s));", [thwart(receiver),thwart(doc_id)])
 			conn.commit()
@@ -394,7 +398,7 @@ def received_department():
 @app.route('/history/received/overall/', methods=["GET","POST"])
 def received_overall():
     c, conn = connection()
-    c.execute("")
+    c.execute("SELECT doc_id,subject,details,sender FROM Document_details NATURAL JOIN Document WHERE receiver = (%s);",[thwart(session['userid'])])
     conn.commit()
     data = c.fetchall()
     c.close()
@@ -415,7 +419,7 @@ def sent_individual():
             print("Getting data from form")
             person  = request.form.get("user_id")
             status  = request.form.get("status")
-            c.execute("") ###################################QUERY
+            c.execute("SELECT doc_id, subject,details, receiver FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND receiver = (%s) AND doc_id IN ( SELECT doc_id FROM Process WHERE status= (%s));",[thwart(session['userid']),thwart(person),thwart(status)])
             conn.commit()
             table = c.fetchall()
             print ("table")
@@ -436,7 +440,7 @@ def sent_department():
             print("Getting data from form")
             dept  = request.form.get("dept")
             status  = request.form.get("status")
-            c.execute("")###################################QUERY
+            c.execute("SELECT doc_id, subject, details,receiver FROM Document NATURAL JOIN Document_details WHERE sender = (%s) AND doc_id IN (SELECT doc_id FROM Process WHERE status= (%s)) AND receiver IN ( SELECT user_id FROM User WHERE department = (%s));",[thwart(session['userid']),thwart(status),thwart(dept)])
             conn.commit()
             table = c.fetchall()
             print ("table")
@@ -452,7 +456,7 @@ def sent_department():
 @app.route('/history/sent/overall/', methods=["GET","POST"])
 def sent_overall():
     c, conn = connection()
-    c.execute("")###################################QUERY
+    c.execute("SELECT doc_id,subject,details,receiver FROM Document_details NATURAL JOIN Document WHERE sender=(%s)",[thwart(session['userid'])])
     conn.commit()
     data = c.fetchall()
     c.close()
@@ -473,7 +477,7 @@ def overall_individual():
             print("Getting data from form")
             person  = request.form.get("user_id")
             status  = request.form.get("status")
-            c.execute("") ###################################QUERY
+            c.execute("SELECT doc_id, subject,details, receiver FROM Document NATURAL JOIN Document_details WHERE (sender = (%s) AND receiver = (%s)) OR (sender = (%s) AND receiver = (%s)) AND doc_id IN ( SELECT doc_id FROM Process WHERE status= (%s));",[thwart(session['userid']),thwart(person),thwart(person), thwart(session['userid'], thwart(status))]) ###################################QUERY
             conn.commit()
             table = c.fetchall()
             print ("table")
