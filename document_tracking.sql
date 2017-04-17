@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: document_tracking
 -- ------------------------------------------------------
--- Server version	5.7.17-0ubuntu0.16.04.1
+-- Server version	5.7.17-0ubuntu0.16.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `Document` (
   PRIMARY KEY (`sr_no`),
   KEY `doc_id` (`doc_id`),
   CONSTRAINT `Document_ibfk_1` FOREIGN KEY (`doc_id`) REFERENCES `Document_details` (`doc_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `Document` (
 
 LOCK TABLES `Document` WRITE;
 /*!40000 ALTER TABLE `Document` DISABLE KEYS */;
-INSERT INTO `Document` VALUES (1,1,'2017-04-11 15:44:33','HEMANG','NISARG'),(2,1,'2017-04-11 15:37:51','NISARG','HEMANG'),(3,1,'2017-04-11 15:44:33','HEMANG','NISARG'),(4,1,'2017-04-11 15:44:47','HEMANG','HEMANG');
+INSERT INTO `Document` VALUES (1,1,'2017-04-11 15:44:33','HEMANG','NISARG'),(2,1,'2017-04-11 15:37:51','NISARG','HEMANG'),(3,1,'2017-04-11 15:44:33','HEMANG','NISARG'),(4,1,'2017-04-11 15:44:47','HEMANG','HEMANG'),(5,2,'2017-04-16 12:56:02','NISARG','HEMANG'),(6,2,'2017-04-16 12:56:55','HEMANG','NISARG'),(7,3,'2017-04-17 10:14:48','NISARG','HEMANG'),(8,4,'2017-04-17 10:15:22','NISARG','HEMANG'),(9,5,'2017-04-17 10:15:43','NISARG','HEMANG');
 /*!40000 ALTER TABLE `Document` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +59,7 @@ CREATE TABLE `Document_details` (
   `details` varchar(255) DEFAULT NULL,
   `move_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`doc_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +68,7 @@ CREATE TABLE `Document_details` (
 
 LOCK TABLES `Document_details` WRITE;
 /*!40000 ALTER TABLE `Document_details` DISABLE KEYS */;
-INSERT INTO `Document_details` VALUES (1,'vjti pointer',2,'vjti','vjti pointer request','2017-04-11 21:07:30');
+INSERT INTO `Document_details` VALUES (1,'vjti pointer',2,'vjti','vjti pointer request','2017-04-11 21:07:30'),(2,'subject',2,'Vjti','details','2017-04-16 18:26:02'),(3,'abcde',1,'abcde','ancde','2017-04-17 15:44:47'),(4,'ksaj',1,'olweanhohnre','lnearnoli','2017-04-17 15:45:21'),(5,'abcde',1,'abcde','abcde','2017-04-17 15:45:43');
 /*!40000 ALTER TABLE `Document_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -229,7 +229,7 @@ CREATE TABLE `Process` (
 
 LOCK TABLES `Process` WRITE;
 /*!40000 ALTER TABLE `Process` DISABLE KEYS */;
-INSERT INTO `Process` VALUES ('2017-04-11 21:07:30','No Comments','HEMANG',1,'CREATED'),('2017-04-11 21:07:30','cool','NISARG',1,'ACCEPTED'),('2017-04-11 21:07:51','this is accepted','HEMANG',1,'REJECTED'),('2017-04-11 21:14:32','No Comments','NISARG',1,'PENDING'),('2017-04-11 21:14:47','','HEMANG',1,'REJECTED');
+INSERT INTO `Process` VALUES ('2017-04-11 21:07:30','No Comments','HEMANG',1,'CREATED'),('2017-04-11 21:07:30','cool','NISARG',1,'ACCEPTED'),('2017-04-11 21:07:51','this is accepted','HEMANG',1,'REJECTED'),('2017-04-11 21:14:32','No Comments','NISARG',1,'PENDING'),('2017-04-11 21:14:47','','HEMANG',1,'REJECTED'),('2017-04-16 18:26:02','No Comments','NISARG',2,'CREATED'),('2017-04-16 18:26:02','Valid document.','HEMANG',2,'ACCEPTED'),('2017-04-16 18:26:55','No Comments','NISARG',2,'PENDING'),('2017-04-17 15:44:48','No Comments','NISARG',3,'CREATED'),('2017-04-17 15:44:48','No Comments','HEMANG',3,'PENDING'),('2017-04-17 15:45:21','No Comments','NISARG',4,'CREATED'),('2017-04-17 15:45:22','No Comments','HEMANG',4,'PENDING'),('2017-04-17 15:45:43','No Comments','NISARG',5,'CREATED'),('2017-04-17 15:45:43','No Comments','HEMANG',5,'PENDING');
 /*!40000 ALTER TABLE `Process` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -269,4 +269,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-16 18:14:18
+-- Dump completed on 2017-04-17 15:49:28
