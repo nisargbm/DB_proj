@@ -103,17 +103,13 @@
                             <input type="submit" value="Submit" class="btn btn-primary m-t-15 waves-effect">
                         </div>
                     </div>
+                </div>
             </form>
-            </div>
         </div>
     </div>
 </section>
 <script type="text/javascript">
-var users = {
-    {
-        users | tojson
-    }
-};
+var users = {{ users | tojson }};
 var A = document.getElementById("A");
 var B = document.getElementById("B");
 A.onchange = function() {
