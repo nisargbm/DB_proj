@@ -144,12 +144,12 @@ def my_docs():
 
 
 class InwardNewForm(Form):
+	to = TextField('to')
 	user_id = TextField('user_id')
 	subject = TextField('subject',[validators.Length(min = 1, max = 255)])
 	document_details = TextField('document_details',[validators.Length(min = 1, max = 1000)])
 	organization = TextField('organization',[validators.Length(min = 1, max = 1000)])
 	no_docs = TextField('no_docs')
-	to = TextField('forward_person')
 	# place = TextField('place_of_recieving',[validators.Length(min = 1,max = 1000)]) 
 
 @app.route('/new_doc/', methods=["GET","POST"])
@@ -157,9 +157,9 @@ class InwardNewForm(Form):
 def new_doc():
 	try:
 		c, conn = connection()
-		form = InwardNewForm(request.form)		
+		form = InwardNewForm(request.form)
 		if request.method == "POST" :
-			sender  = session['userid'];
+			sender  = session['userid']
 			subject = form.subject.data
 			doc_details = form.document_details.data
 			org = form.organization.data
@@ -171,6 +171,7 @@ def new_doc():
 			data = c.execute("SELECT doc_id FROM Document_details WHERE subject= (%s) AND number_of_documents = (%s) AND details = (%s) AND organisation = (%s)",[ thwart(subject), thwart(no_docs), thwart(doc_details) , thwart(org)])
 			data = c.fetchone()
 			doc_id1=data[0]
+			print("HEllo"+str(reciever))
 			c.execute("INSERT INTO Process(user_id,doc_id,status) VALUES (%s,%s,'CREATED')",[session['userid'], int(doc_id1)])
 			c.execute("INSERT INTO Process(user_id,doc_id) VALUES (%s,%s)",[thwart(reciever), int(doc_id1)])
 			c.execute("INSERT INTO Document(doc_id,sender,receiver)VALUES(%s,%s,%s)",[int(doc_id1),session['userid'],thwart(reciever)])
@@ -493,7 +494,7 @@ def overall_department():
             print("Getting data from form")
             dept  = request.form.get("dept")
             status  = request.form.get("status")
-            c.execute("")###################################QUERY
+            c.execute("SELECT doc_id, subject, details,receiver FROM Document NATURAL JOIN Document_details WHERE sender = (%s) OR receiver = (%s) AND doc_id IN ( SELECT doc_id FROM Process WHERE status= (%s) ) AND receiver IN (SELECT user_id FROM User WHERE department = (%s));",[thwart(session['userid']),thwart(session['userid']),thwart(status),thwart(dept)])###################################QUERY
             conn.commit()
             table = c.fetchall()
             print ("table")
