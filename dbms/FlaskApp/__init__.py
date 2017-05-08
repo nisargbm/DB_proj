@@ -42,7 +42,7 @@ def homepage():
 def track_doc(variable):
 	try:
 		c, conn = connection()
-		c.execute("SELECT doc_id,sender,receiver,subject,details,Date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND user_id = receiver AND movement_date = move_date ORDER BY date_of_receipt DESC;",[thwart(variable)])
+		c.execute("SELECT doc_id,sender,receiver,subject,details,date_of_receipt,status,comment FROM Document NATURAL JOIN Document_details NATURAL JOIN Process WHERE doc_id = (%s) AND user_id = receiver AND movement_date = date_of_receipt ORDER BY date_of_receipt DESC;",[thwart(variable)])
 		conn.commit()
 		data = c.fetchall()
 		return render_template("doc_track.html", data = data)
@@ -62,7 +62,7 @@ def photos_page():
 @login_required
 def home():
 	c, conn = connection()
-	c.execute("SELECT DISTINCT doc_id,subject,details,sender FROM Process NATURAL JOIN Document NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' AND receiver = (%s) AND movement_date = move_date;",[thwart(session['userid']),thwart(session['userid'])])
+	c.execute("SELECT DISTINCT doc_id,subject,details,sender FROM Process NATURAL JOIN Document NATURAL JOIN Document_details WHERE user_id = (%s) AND status = 'PENDING' AND receiver = (%s) AND movement_date = date_of_receipt;",[thwart(session['userid']),thwart(session['userid'])])
 	conn.commit()
 	data = c.fetchall()
 	c.close()
@@ -110,7 +110,7 @@ def existing_doc(variable):
 			gc.collect()
 			return redirect(url_for('home'))
 
-		c.execute("SELECT DISTINCT department FROM User")
+		c.execute("SELECT DISTINCT department FROM User WHERE department<>'OTHERS'")
 		conn.commit()
 		data = c.fetchall()
 		dept = []
@@ -182,7 +182,7 @@ def new_doc():
 			gc.collect()
 			return redirect(url_for('home'))
 		else:
-			c.execute("SELECT DISTINCT department FROM User")
+			c.execute("SELECT DISTINCT department FROM User WHERE department<>'OTHERS'")
 			conn.commit()
 			data = c.fetchall()
 			dept = []
@@ -270,7 +270,7 @@ def new_outward_form():
 			gc.collect()
 			return redirect(url_for('home'))
 		else:
-			c.execute("SELECT DISTINCT department FROM User")
+			c.execute("SELECT DISTINCT department FROM User WHERE department<>'OTHERS'")
 			conn.commit()
 			data = c.fetchall()
 			dept = []
@@ -302,7 +302,7 @@ def old_outward_form(variable):
 		if request.method == "POST" :
 			sender  = session['userid'];
 			comments = request.form.get("comment")
-			receiver = "OUTWARD"
+			receiver = "OTHERS"
 			doc_id = variable
 			if(request.form.get('status')):
 				status = "ACCEPTED"
@@ -325,7 +325,7 @@ def old_outward_form(variable):
 			conn.commit()
 
 			print("Thanks for uploading!")
-			c.execute("INSERT INTO Outward (sending_place, to_whom_addressed) VALUES (%s,%s)",[ thwart(send_place), thwart(to_whom)])
+			c.execute("INSERT INTO Outward (doc_id, sending_place, to_whom_addressed) VALUES (%s,%s,%s)",[ thwart(doc_id), thwart(send_place), thwart(to_whom)])
 			conn.commit()
 			c.close()
 			conn.close()

@@ -18,7 +18,7 @@
                                         {% for i in range(1,dept|length) %}
                                         <option value="{{ dept[i] }}">{{ dept[i] }}</option>
                                         {% endfor %}
-                                        <option onclick="window.location.href='/new_outward_form/';">Other</option>
+                                        <option onclick="window.location.href='/new_outward_form/';">OUTWARD</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-6">
@@ -134,11 +134,7 @@
     </div>
 </section>
 <script type="text/javascript">
-var users = {
-    {
-        users | tojson
-    }
-};
+var users = {{   users | tojson }};
 var A = document.getElementById("A");
 var B = document.getElementById("B");
 A.onchange = function() {
