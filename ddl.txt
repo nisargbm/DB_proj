@@ -75,7 +75,7 @@ CREATE TABLE Process(
     movement_date datetime NOT NULL DEFAULT NOW(),
     comment varchar(255) NULL DEFAULT 'No Comments',
     user_id varchar (255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     doc_id int NOT NULL ,
     FOREIGN KEY (doc_id) REFERENCES Document_details(doc_id) ON DELETE CASCADE ON UPDATE CASCADE,
     status varchar(50) DEFAULT 'PENDING'
